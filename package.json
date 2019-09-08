@@ -9,7 +9,7 @@
     "db:win": "npx mkdirp ./database && mongod --dbpath ./database",
     "lint": "eslint .",
     "lint:fix": "eslint --fix .",
-    "format": "prettier --write \"**/*.+(js|json|md)\"",
+    "format": "prettier --write \"**/*.+(json|md)\"",
     "start": "node index.js"
   },
   "dependencies": {
@@ -20,6 +20,8 @@
   "devDependencies": {
     "dotenv": "^8.1.0",
     "eslint": "^6.3.0",
+    "eslint-config-prettier": "^6.2.0",
+    "eslint-plugin-prettier": "^3.1.0",
     "nodemon": "^1.19.2",
     "prettier": "1.18.2"
   }
