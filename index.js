@@ -2,6 +2,11 @@ const express = require('express');
 const morgan = require('morgan');
 const mongoose = require('mongoose');
 
+// load dev env variables using dotenv
+if (process.env.NODE_ENV !== 'production') {
+  require('dotenv').config({ path: '.env.development.local' });
+}
+
 const app = express();
 
 app.use(express.json(), express.urlencoded({ extended: true }));
