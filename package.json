@@ -2,5 +2,13 @@
   "name": "v11-bears-team-08",
   "version": "0.1.0",
   "private": true,
-  "main": "index.js"
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "dependencies": {
+    "express": "^4.17.1",
+    "mongoose": "^5.6.13",
+    "morgan": "^1.9.1"
+  }
 }
