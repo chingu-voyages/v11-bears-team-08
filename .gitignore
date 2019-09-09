@@ -3,6 +3,9 @@
 # Project's local db folder
 database/
 
+# Test coverage directory
+coverage/
+
 # Logs
 logs
 npm-debug.log*

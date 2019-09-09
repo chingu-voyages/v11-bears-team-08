@@ -1,2 +1,5 @@
+coverage/*
+
+# include rc files
 !.eslintrc.js
 !.prettierrc.js
