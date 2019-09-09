@@ -4,6 +4,8 @@
   "private": true,
   "main": "index.js",
   "scripts": {
+    "db:unix": "mkdir -p ./database && mongod --dbpath ./database",
+    "db:win": "npx mkdirp ./database && mongod --dbpath ./database",
     "start": "node index.js"
   },
   "dependencies": {

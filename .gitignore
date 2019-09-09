@@ -1,5 +1,8 @@
 ### Node ###
 
+# Project's local db folder
+database/
+
 # Logs
 logs
 npm-debug.log*
