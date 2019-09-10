@@ -16,6 +16,10 @@ if (process.env.NODE_ENV === 'production') {
   app.use(morgan('dev'))
 }
 
+app.get('/api', (req, res) => {
+  res.json({ message: 'You received a response from the server' })
+})
+
 const PORT = process.env.PORT || 3001
 app.listen(PORT, () => {
   console.info(`Successfully connected to port ${PORT}`)
