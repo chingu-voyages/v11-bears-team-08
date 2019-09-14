@@ -2,6 +2,10 @@ const express = require('express')
 const morgan = require('morgan')
 const mongoose = require('mongoose')
 
+// import auth routers
+
+const authRoutes = require('./src/routes/auth')
+
 // load dev env variables using dotenv
 if (process.env.NODE_ENV !== 'production') {
   require('dotenv').config({ path: '.env.development.local' })
@@ -15,6 +19,7 @@ if (process.env.NODE_ENV === 'production') {
 } else {
   app.use(morgan('dev'))
 }
+app.use('/api/user', authRoutes)
 
 app.get('/api', (req, res) => {
   res.json({ message: 'You received a response from the server' })
