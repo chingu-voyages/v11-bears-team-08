@@ -1,28 +1,28 @@
 import React from 'react'
-import Example from './components/example'
-import logo from './logo.svg'
-import './App.css'
+import styled from '@emotion/styled'
+import { theme } from './utils/theme'
+import Reset from './Reset'
+import Global from './Global'
+import Nav from './components/Nav'
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <Example />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  )
-}
+const Container = styled.div`
+  position: relative;
+  display: block;
+  width: 100vw;
+  nheight: 100%;
+  min-height: 100vh;
+`
+
+export const ThemeContext = React.createContext(theme)
+
+const App = () => (
+  <ThemeContext.Provider value={theme}>
+    <Reset />
+    <Global />
+    <Container>
+      <Nav />
+    </Container>
+  </ThemeContext.Provider>
+)
 
 export default App

@@ -15,6 +15,7 @@ npm-debug.log*
 
 # Dependency directories
 /node_modules
+/client/node_modules
 
 # Optional eslint cache
 .eslintcache
