@@ -16,9 +16,8 @@ if (process.env.NODE_ENV === 'production') {
   app.use(morgan('dev'))
 }
 
-app.get('/api', (req, res) => {
-  res.json({ message: 'You received a response from the server' })
-})
+const { signup } = require('./src/utils/auth')
+app.post('/signup', signup)
 
 // deployment specific code that serves CRA's production build
 if (process.env.NODE_ENV == 'production') {
