@@ -5,7 +5,6 @@ import Reset from './Reset'
 import Global from './Global'
 import Nav from './components/Nav'
 import Landing from './pages/Landing'
-import { mq } from './utils/responsiveUtils'
 
 const Container = styled.div`
   position: relative;

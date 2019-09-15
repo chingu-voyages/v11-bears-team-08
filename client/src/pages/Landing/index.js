@@ -1,7 +1,15 @@
-import React from 'react'
+/** @jsx jsx */
+import React, { useRef, useEffect } from 'react'
+import { jsx, css, keyframes } from '@emotion/core'
 import styled from '@emotion/styled'
 import Search from '../../components/Search'
 import { theme } from '../../utils/theme'
+
+const wobble = keyframes`
+  50% {
+    transform: rotate(10deg);
+  }
+`
 
 const Container = styled.div`
   position: relative;
@@ -58,6 +66,7 @@ const Timer = styled.img`
   top: -8vw;
   right: 5vw;
   width: 30px;
+  animation: ${wobble} 2s ease-in-out 0.25s infinite;
 `
 
 const Weight = styled.img`
@@ -65,12 +74,14 @@ const Weight = styled.img`
   right: -20vw;
   width: 70px;
   height: 60px;
+  animation: ${wobble} 4s ease-in-out 0.5s infinite;
 `
 
 const Bottle = styled.img`
   top: 25vw;
   left: -20vw;
   width: 80px;
+  animation: ${wobble} 3s ease-in-out 0.75s infinite;
 `
 
 export default () => (
