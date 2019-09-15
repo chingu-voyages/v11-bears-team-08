@@ -4,25 +4,24 @@ import { theme } from './utils/theme'
 import Reset from './Reset'
 import Global from './Global'
 import Nav from './components/Nav'
+import Landing from './pages/Landing'
+import { mq } from './utils/responsiveUtils'
 
 const Container = styled.div`
   position: relative;
   display: block;
   width: 100vw;
-  nheight: 100%;
+  height: 100%;
   min-height: 100vh;
 `
 
-export const ThemeContext = React.createContext(theme)
-
 const App = () => (
-  <ThemeContext.Provider value={theme}>
+  <Container>
     <Reset />
     <Global />
-    <Container>
-      <Nav />
-    </Container>
-  </ThemeContext.Provider>
+    <Nav />
+    <Landing />
+  </Container>
 )
 
 export default App

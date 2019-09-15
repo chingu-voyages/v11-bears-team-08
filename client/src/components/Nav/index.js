@@ -12,7 +12,9 @@ const Nav = styled.nav`
   left: 0;
   padding: 2rem;
   width: 100vw;
+  height: 5vh;
   max-width: 100vw;
+  z-index: 2000;
 `
 
 const List = styled.ul`

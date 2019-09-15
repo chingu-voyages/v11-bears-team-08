@@ -128,6 +128,12 @@ export default () => (
         border-collapse: collapse;
         border-spacing: 0;
       }
+      button {
+        border: none;
+      }
+      input {
+        border: none;
+      }
     `}
   />
 )
