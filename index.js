@@ -19,12 +19,11 @@ if (process.env.NODE_ENV === 'production') {
 } else {
   app.use(morgan('dev'))
 }
-app.use('/api/user', authRoutes)
 
 app.get('/api', (req, res) => {
   res.json({ message: 'You received a response from the server' })
 })
-
+app.use('/api/user', authRoutes)
 // deployment specific code that serves CRA's production build
 if (process.env.NODE_ENV == 'production') {
   const path = require('path')
