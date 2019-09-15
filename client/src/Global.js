@@ -5,6 +5,10 @@ import { theme } from './utils/theme'
 export default () => (
   <Global
     styles={css`
+      html {
+        font-size: 16px;
+      }
+
       * {
         box-sizing: border-box;
       }
