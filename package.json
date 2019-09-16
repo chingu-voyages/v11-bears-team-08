@@ -20,7 +20,7 @@
     "bcryptjs": "^2.4.3",
     "express": "^4.17.1",
     "jsonwebtoken": "^8.5.1",
-    "mongoose": "^5.6.13",
+    "mongoose": "^5.7.1",
     "morgan": "^1.9.1"
   },
   "devDependencies": {
