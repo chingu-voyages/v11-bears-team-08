@@ -1,8 +1,7 @@
 const Joi = require('@hapi/joi')
 
 const loginValidation = (data) => {
-  console.log('hi form joi')
-  const schema = {
+  const loginSchema = {
     email: Joi.string()
       .min(6)
       .required()
@@ -11,7 +10,7 @@ const loginValidation = (data) => {
       .min(6)
       .required()
   }
-  Joi.validate(data, schema)
+  Joi.validate(data, loginSchema)
 }
 
 module.exports.loginValidation = loginValidation

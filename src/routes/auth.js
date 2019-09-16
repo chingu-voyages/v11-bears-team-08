@@ -9,7 +9,6 @@ router.post('/register', (req, res) => {
 })
 
 router.post('/login', async (req, res) => {
-  console.log('working')
   const { error } = await loginValidation({
     email: req.body.email,
     password: req.body.password
