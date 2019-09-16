@@ -10,7 +10,9 @@ const loginValidation = (data) => {
       .min(6)
       .required()
   }
-  Joi.validate(data, loginSchema)
+
+  console.log(data, loginSchema)
+  return Joi.validate(data, loginSchema)
 }
 
 module.exports.loginValidation = loginValidation
