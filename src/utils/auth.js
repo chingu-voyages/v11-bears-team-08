@@ -2,41 +2,60 @@ const jwt = require('jsonwebtoken')
 const bcrypt = require('bcryptjs')
 const User = require('../resources/components/user/user.model')
 
-const privateKey = 'test'
+// wrong!!!!!! should be assigned to an env var.
+const privateKey = 'gimly-privaaaaaaate'
 
-function createJwtToken(user) {
-  return jwt.sign(user, privateKey, { expiresIn: '100d' })
-}
-
-function checkPassword(password, hash) {
-  bcrypt.compare(password, hash)
-}
-
-async function setPassword(password) {
-  const salt = await bcrypt.genSalt()
-  const hash = await bcrypt.hash(password, salt)
-
-  return hash
+function newToken(id) {
+  const idToJSON = JSON.parse(JSON.stringify(id))
+  return jwt.sign({ idToJSON }, privateKey, { expiresIn: '2h' })
 }
 
 async function signup(req, res) {
-  // create an instance of the user model.
-  const newUser = new User(req.body)
-  // hash password using setPassword function before saving to db.
-  newUser.password = await setPassword(newUser.password)
-  // save to db
-  newUser.save(function(err, user) {
-    if (err) return res.status(400).json({ error: err })
-    // create a JWT token.
-    // Also, mongo returns the user as a special format that must be converted to JSON.
-    const jwtToken = createJwtToken(JSON.parse(JSON.stringify(user)))
+  try {
+    const userSaved = await User.create(req.body)
+    const token = newToken(userSaved._id)
+    return res.status(200).json({ token })
+  } catch (error) {
+    if ((error.name = 'MongoError' && error.code === 11000)) {
+      return res.status(400).json({ message: 'This email already exists.' })
+    }
 
-    return res.status(200).json({ data: jwtToken })
-  })
+    if (error.errors && error.errors.email) {
+      return res.status(400).json({ message: error.errors.email.message })
+    }
+
+    if (error.errors && error.errors.password) {
+      return res.status(400).json({ message: error.errors.password.message })
+    }
+
+    // in case any errors are not properly handled.
+    return res.status(400).json({ message: error })
+  }
+}
+
+async function signin(req, res) {
+  const password = req.body.password || ''
+
+  const userExists = await User.findOne({ email: req.body.email })
+    .select('password')
+    .exec()
+
+  if (!userExists) {
+    return res.status(400).send({ message: 'Email not valid.' })
+  }
+
+  const validPassword = await bcrypt.compare(password, userExists.password)
+
+  if (validPassword) {
+    const token = newToken(userExists._id)
+
+    return res.status(200).send({ token })
+  }
+
+  return res.status(400).send({ message: 'Password not valid.' })
 }
 
 module.exports = {
-  createJwtToken: createJwtToken,
   signup: signup,
-  checkPassword: checkPassword
+  signin: signin
 }
