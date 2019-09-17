@@ -34,7 +34,7 @@ function validEmail(val) {
   return /^([\w-\.]+@([\w-]+\.)+[\w-]{2,4})?$/.test(val)
 }
 
-userSchema.pre('save', function (next) {
+userSchema.pre('save', function(next) {
   if (!this.isModified('password')) return next()
 
   // hash password using bcrypt function before saving to db.
