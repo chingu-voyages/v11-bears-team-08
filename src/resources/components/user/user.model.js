@@ -1,4 +1,5 @@
 const mongoose = require('mongoose')
+const bcrypt = require('bcryptjs')
 
 const userSchema = new mongoose.Schema({
   firstName: {
@@ -15,27 +16,38 @@ const userSchema = new mongoose.Schema({
   },
   email: {
     type: String,
-    required: true,
+    required: [true, 'Email is required.'],
     unique: true,
     trim: true,
-    select: false
+    select: false,
+    validate: [validEmail, 'This email is not in an email format.']
   },
   password: {
     type: String,
-    minlength: 8,
-    required: true,
+    minlength: [8, 'Password requires to have 8 characters minimum.'],
+    required: [true, 'Password is required.'],
     select: false
   }
 })
 
-// userSchema.pre('save', function (next) {
-//   if (!this.isModified('password')) {
-//     console.log('not modified')
-//     return next()
-//   }
+function validEmail(val) {
+  return /^([\w-\.]+@([\w-]+\.)+[\w-]{2,4})?$/.test(val)
+}
 
-//   next()
-// })
+userSchema.pre('save', function (next) {
+  if (!this.isModified('password')) return next()
+
+  // hash password using bcrypt function before saving to db.
+  bcrypt.hash(this.password, 10, (err, hash) => {
+    if (err) {
+      next(err)
+    }
+
+    this.password = hash
+    console.log(this.password)
+    next()
+  })
+})
 
 const User = mongoose.model('User', userSchema)
 
