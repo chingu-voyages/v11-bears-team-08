@@ -1,6 +1,7 @@
 const jwt = require('jsonwebtoken')
 const bcrypt = require('bcryptjs')
 const User = require('../resources/components/user/user.model')
+const Trainer = require('../resources/components/trainer/trainer.model')
 
 // wrong!!!!!! should be assigned to an env var.
 const privateKey = 'gimly-privaaaaaaate'
@@ -12,9 +13,14 @@ function newToken(id) {
 
 async function signup(req, res) {
   try {
+    //  save user
     const userSaved = await User.create(req.body)
+    //  create JWT Token
     const token = newToken(userSaved._id)
-    return res.status(200).json({ token })
+    //  create trainer
+    const trainerSave = await Trainer.create(req.body.trainer)
+    // NOTE: for testing, send back token, usermodel and trainermodel
+    return res.status(200).json([{ token }, { userSaved }, { trainerSave }])
   } catch (error) {
     if ((error.name = 'MongoError' && error.code === 11000)) {
       return res.status(400).json({ message: 'This email already exists.' })
