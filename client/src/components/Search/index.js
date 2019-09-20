@@ -26,6 +26,9 @@ const Input = styled.input`
   background: ${theme.colors.dark};
   border-radius: 20px;
   color: white;
+  outline: none;
+
+  ${'' /* &:hover {} */}
 `
 
 export default () => (
