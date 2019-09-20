@@ -1,6 +1,8 @@
+/** @jsx jsx */
 import React from 'react'
 import styled from '@emotion/styled'
 import { theme } from '../../utils/theme'
+import { jsx } from '@emotion/core'
 
 const Form = styled.div`
   position: relative;
@@ -27,8 +29,8 @@ const Input = styled.input`
   border-radius: 20px;
   color: white;
   outline: none;
-
-  ${'' /* &:hover {} */}
+  box-shadow: 1px 1px 4px rgba(0, 0, 0, 0.3);
+  transition-duration: 2s;
 `
 
 export default () => (
