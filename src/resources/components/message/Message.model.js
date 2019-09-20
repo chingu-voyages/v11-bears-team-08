@@ -14,14 +14,15 @@ const messageSchema = new Schema(
           type: Schema.Types.ObjectId,
           ref: 'User',
           required: true
+        },
+        sender: {
+          type: Schema.Types.ObjectId,
+          ref: 'User',
+          required: true
         }
       }
     ],
-    sender: {
-      type: Schema.Types.ObjectId,
-      ref: 'User',
-      required: true
-    },
+
     read: { type: Date }
   },
   {
