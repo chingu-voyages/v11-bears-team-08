@@ -1,5 +1,6 @@
 const mongoose = require('mongoose')
 const bcrypt = require('bcryptjs')
+const errorMessages = require('../../../utils/errorMessages')
 
 const userSchema = new mongoose.Schema({
   firstName: {
@@ -16,16 +17,16 @@ const userSchema = new mongoose.Schema({
   },
   email: {
     type: String,
-    required: [true, 'Email is required.'],
+    required: [true, errorMessages.signup.email.required],
     unique: true,
     trim: true,
     select: false,
-    validate: [validEmail, 'This email is not in an email format.']
+    validate: [validEmail, errorMessages.signup.email.invalidFormat]
   },
   password: {
     type: String,
-    minlength: [8, 'Password requires to have 8 characters minimum.'],
-    required: [true, 'Password is required.'],
+    minlength: [8, errorMessages.signup.password.minlength],
+    required: [true, errorMessages.signup.password.required],
     select: false
   }
 })
@@ -34,7 +35,7 @@ function validEmail(val) {
   return /^([\w-\.]+@([\w-]+\.)+[\w-]{2,4})?$/.test(val)
 }
 
-userSchema.pre('save', function(next) {
+userSchema.pre('save', function (next) {
   if (!this.isModified('password')) return next()
 
   // hash password using bcrypt function before saving to db.
@@ -44,7 +45,6 @@ userSchema.pre('save', function(next) {
     }
 
     this.password = hash
-    console.log(this.password)
     next()
   })
 })
