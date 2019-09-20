@@ -13,16 +13,15 @@ function newToken(id) {
 
 async function signup(req, res) {
   try {
-
     const userSaved = await User.create(req.body)
     const token = newToken(userSaved._id)
     return res.status(200).json({ token })
-
   } catch (error) {
-
     // email duplication returns a sepcial error.
     if ((error.name = 'MongoError' && error.code === 11000)) {
-      return res.status(400).json({ message: errorMessages.signup.email.alreadyExists })
+      return res
+        .status(400)
+        .json({ message: errorMessages.signup.email.alreadyExists })
     }
 
     if (error.errors && error.errors.email) {
@@ -40,11 +39,15 @@ async function signup(req, res) {
 
 async function signin(req, res) {
   if (!req.body.email) {
-    return res.status(400).send({ message: errorMessages.signin.email.required })
+    return res
+      .status(400)
+      .send({ message: errorMessages.signin.email.required })
   }
 
   if (!req.body.password) {
-    return res.status(400).send({ message: errorMessages.signin.password.required })
+    return res
+      .status(400)
+      .send({ message: errorMessages.signin.password.required })
   }
 
   const userExists = await User.findOne({ email: req.body.email })
@@ -52,10 +55,15 @@ async function signin(req, res) {
     .exec()
 
   if (!userExists) {
-    return res.status(400).send({ message: errorMessages.signin.email.notFound })
+    return res
+      .status(400)
+      .send({ message: errorMessages.signin.email.notFound })
   }
 
-  const validPassword = await bcrypt.compare(req.body.password, userExists.password)
+  const validPassword = await bcrypt.compare(
+    req.body.password,
+    userExists.password
+  )
 
   if (validPassword) {
     const token = newToken(userExists._id)
@@ -64,7 +72,9 @@ async function signin(req, res) {
   }
 
   // in case any errors are not properly handled.
-  return res.status(400).send({ message: errorMessages.signin.password.wrongPassword })
+  return res
+    .status(400)
+    .send({ message: errorMessages.signin.password.wrongPassword })
 }
 
 module.exports = {

@@ -7,7 +7,7 @@ module.exports = {
     },
     password: {
       required: 'Password is required.',
-      minlength: 'Password requires to have 8 characters minimum.',
+      minlength: 'Password requires to have 8 characters minimum.'
     }
   },
   signin: {
