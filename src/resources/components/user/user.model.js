@@ -32,10 +32,10 @@ const userSchema = new mongoose.Schema({
 })
 
 function validEmail(val) {
-  return /^([\w-\.]+@([\w-]+\.)+[\w-]{2,4})?$/.test(val)
+  return /^([\w-\.]+@([\w-]+\.)+[\w-]{2,4})?$/.test(val) //  eslint-disable-line no-useless-escape
 }
 
-userSchema.pre('save', function (next) {
+userSchema.pre('save', function(next) {
   if (!this.isModified('password')) return next()
 
   // hash password using bcrypt function before saving to db.
