@@ -1,6 +1,7 @@
 const jwt = require('jsonwebtoken')
 const bcrypt = require('bcryptjs')
-const User = require('../resources/components/user/user.model')
+const Trainer = require('../resources/components/trainer/trainer.model')
+const Client = require('../resources/components/client/client.model')
 
 // wrong!!!!!! should be assigned to an env var.
 const privateKey = 'gimly-privaaaaaaate'
@@ -11,9 +12,26 @@ function newToken(id) {
 }
 
 async function signup(req, res) {
+  if (
+    !req.body.type ||
+    (req.body.type !== 'trainer' && req.body.type !== 'client')
+  ) {
+    res.json({ message: 'Invalid account type.' })
+  }
+
+  const user = { email: req.body.email, password: req.body.password }
+
   try {
-    const userSaved = await User.create(req.body)
+    let userSaved
+
+    if ((req.body.type = 'trainer')) {
+      userSaved = await Trainer.create(user)
+    } else {
+      userSaved = await Client.create(user)
+    }
+
     const token = newToken(userSaved._id)
+
     return res.status(200).json({ token })
   } catch (error) {
     if ((error.name = 'MongoError' && error.code === 11000)) {
