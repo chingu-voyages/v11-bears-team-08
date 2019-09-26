@@ -15,7 +15,6 @@ const Trainer = User.discriminator(
     },
     specialities: [String],
     apointments: [String],
-    conversations: [String],
     reviews: [String]
   })
 )
