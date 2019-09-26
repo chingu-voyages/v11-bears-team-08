@@ -1,37 +1,48 @@
 const mongoose = require('mongoose')
 const bcrypt = require('bcryptjs')
 
-const userSchema = new mongoose.Schema({
-  firstName: {
-    type: String,
-    trim: true,
-    minlength: 3,
-    maxlength: 50
+const baseOptions = {
+  discriminatorKey: 'type',
+  collection: 'users'
+}
+
+const userSchema = new mongoose.Schema(
+  {
+    firstName: {
+      type: String,
+      trim: true,
+      minlength: 3,
+      maxlength: 50
+    },
+    lastName: {
+      type: String,
+      trim: true,
+      minlength: 3,
+      maxlength: 50
+    },
+    email: {
+      type: String,
+      required: [true, 'Email is required.'],
+      unique: true,
+      trim: true,
+      select: false,
+      validate: [validEmail, 'This email is not in an email format.']
+    },
+    password: {
+      type: String,
+      minlength: [8, 'Password requires to have 8 characters minimum.'],
+      required: [true, 'Password is required.'],
+      select: false
+    },
+    avatar: String,
+    apointments: [String],
+    conversations: [String]
   },
-  lastName: {
-    type: String,
-    trim: true,
-    minlength: 3,
-    maxlength: 50
-  },
-  email: {
-    type: String,
-    required: [true, 'Email is required.'],
-    unique: true,
-    trim: true,
-    select: false,
-    validate: [validEmail, 'This email is not in an email format.']
-  },
-  password: {
-    type: String,
-    minlength: [8, 'Password requires to have 8 characters minimum.'],
-    required: [true, 'Password is required.'],
-    select: false
-  }
-})
+  baseOptions
+)
 
 function validEmail(val) {
-  return /^([\w-\.]+@([\w-]+\.)+[\w-]{2,4})?$/.test(val)
+  return /^([\w-\.]+@([\w-]+\.)+[\w-]{2,4})?$/.test(val) // eslint-disable-line no-useless-escape
 }
 
 userSchema.pre('save', function(next) {
@@ -44,7 +55,6 @@ userSchema.pre('save', function(next) {
     }
 
     this.password = hash
-    console.log(this.password)
     next()
   })
 })
