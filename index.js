@@ -16,9 +16,18 @@ if (process.env.NODE_ENV === 'production') {
   app.use(morgan('dev'))
 }
 
+//  authentication middleware
 const { signup, signin } = require('./src/utils/auth')
+
+// conversation middleware
+
+const { conversations } = require('./src/routes')
+
+// routes
 app.post('/signup', signup)
 app.post('/signin', signin)
+
+app.get('/user/:id/conversations', conversations)
 
 // deployment specific code that serves CRA's production build
 if (process.env.NODE_ENV == 'production') {
