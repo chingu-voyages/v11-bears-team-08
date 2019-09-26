@@ -17,10 +17,26 @@ async function signup(req, res) {
     const userSaved = await User.create(req.body)
     //  create JWT Token
     const token = newToken(userSaved._id)
-    //  create trainer
-    const trainerSave = await Trainer.create(req.body.trainer)
+
+    // check to see if user is also signing up as trainer
+    const singupForTraineraccount = req.body.trainer
+
+    if (singupForTraineraccount) {
+      // user wants to sign up as trainer also
+      // const trainerSave = await Trainer.create(req.body.trainer)
+      const trainer = new Trainer({
+        name: req.body.gender,
+        location: req.body.location,
+        specialities: req.body.specialities
+      })
+
+      trainer.save((saveErr, savedTrainer) => {
+        return res.status(201).send({ data: savedTrainer })
+      })
+    }
+
     // NOTE: for testing, send back token, usermodel and trainermodel
-    return res.status(200).json([{ token }, { userSaved }, { trainerSave }])
+    return res.status(200).json([{ token }, { userSaved }])
   } catch (error) {
     if ((error.name = 'MongoError' && error.code === 11000)) {
       return res.status(400).json({ message: 'This email already exists.' })
