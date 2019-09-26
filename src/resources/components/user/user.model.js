@@ -2,7 +2,7 @@ const mongoose = require('mongoose')
 const bcrypt = require('bcryptjs')
 
 const baseOptions = {
-  discriminatorKey: 'type',
+  discriminatorKey: '__type',
   collection: 'users'
 }
 
