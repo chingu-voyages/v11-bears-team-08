@@ -21,6 +21,25 @@ function genCookieOpts() {
   return cookieOptions
 }
 
+async function getCachedToken(req, res) {
+  const { authToken } = req.signedCookies
+
+  if (!authToken) {
+    return res.status(204).send()
+  }
+
+  try {
+    await jwt.verify(authToken, privateKey)
+
+    return res.json({ token: authToken })
+  } catch (error) {
+    if (error.name === 'JsonWebTokenError')
+      return res.status(401).json({ error })
+
+    return res.status(500).send()
+  }
+}
+
 async function signup(req, res) {
   if (
     !req.body.type ||
@@ -80,6 +99,7 @@ async function signin(req, res) {
 }
 
 module.exports = {
-  signup: signup,
-  signin: signin
+  signup,
+  signin,
+  getCachedToken
 }

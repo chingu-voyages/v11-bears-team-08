@@ -21,9 +21,10 @@ if (process.env.NODE_ENV === 'production') {
   app.use(morgan('dev'))
 }
 
-const { signup, signin } = require('./src/utils/auth')
-app.post('/signup', signup)
-app.post('/signin', signin)
+const authController = require('./src/utils/auth')
+app.post('/signup', authController.signup)
+app.post('/signin', authController.signin)
+app.post('/getCachedToken', authController.getCachedToken)
 
 // deployment specific code that serves CRA's production build
 if (process.env.NODE_ENV == 'production') {
