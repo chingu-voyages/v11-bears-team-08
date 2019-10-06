@@ -10,6 +10,8 @@ export default () => {
   function sendMessage(e) {
     e.preventDefault()
 
+    if (!input) return
+
     // display timing, hours & minutes only.
     const message = {
       me: true,
