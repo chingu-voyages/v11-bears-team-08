@@ -40,6 +40,33 @@ async function getCachedToken(req, res) {
   }
 }
 
+async function getLoggedUser(req, res) {
+  const { authorization } = req.headers
+
+  if (!authorization) {
+    return res.status(204).send()
+  }
+
+  const token = authorization.split(' ')[1]
+
+  try {
+    const { idToJSON: userId } = await jwt.verify(token, privateKey)
+    const user = await User.find({ _id: userId })
+
+    if (!user) {
+      return res.json({ message: 'No User Found' })
+    }
+
+    return res.json({ user })
+  } catch (error) {
+    if (error.name === 'JsonWebTokenError') {
+      return res.status(401).json({ error })
+    }
+
+    return res.status(500).send()
+  }
+}
+
 async function signup(req, res) {
   if (
     !req.body.type ||
@@ -101,5 +128,6 @@ async function signin(req, res) {
 module.exports = {
   signup,
   signin,
-  getCachedToken
+  getCachedToken,
+  getLoggedUser
 }

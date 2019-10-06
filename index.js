@@ -25,6 +25,7 @@ const authController = require('./src/utils/auth')
 app.post('/signup', authController.signup)
 app.post('/signin', authController.signin)
 app.post('/getCachedToken', authController.getCachedToken)
+app.get('/getLoggedUser', authController.getLoggedUser)
 
 // deployment specific code that serves CRA's production build
 if (process.env.NODE_ENV == 'production') {
