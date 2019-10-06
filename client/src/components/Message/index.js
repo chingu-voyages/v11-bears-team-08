@@ -6,7 +6,7 @@ const fadeIn = keyframes`
   0% {
     display: none;
     opacity: 0;
-    transform: translateY(50px);
+    transform: translateY(20px);
   }
 
   100% {
@@ -20,7 +20,7 @@ const Container = styled.div`
   display: flex;
   margin: 0px 0px 20px 0px;
   padding: 20px 0px;
-  animation: ${fadeIn} 0.4s ease-in-out 0.5s;
+  animation: ${fadeIn} ease-in-out 0.2s;
 `
 
 const Avatar = styled.div`
