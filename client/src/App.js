@@ -4,6 +4,7 @@ import styled from '@emotion/styled'
 import Reset from './Reset'
 import Global from './Global'
 import Landing from './pages/Landing'
+import Signup from './pages/Signup'
 import Conversation from './pages/Conversation'
 
 const Container = styled.div`
@@ -27,7 +28,7 @@ const App = () => (
       </Route>
 
       <Route path="/login" render={() => <h1>We're in signin</h1>} />
-      <Route path="/register" render={() => <h1>We're in signup</h1>} />
+      <Route path="/register" component={Signup} />
     </BrowserRouter>
   </Container>
 )
