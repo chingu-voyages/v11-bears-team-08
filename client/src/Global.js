@@ -76,6 +76,25 @@ export default () => (
       .text_small {
         font-size: 0.8em;
       }
+
+      ::-webkit-input-placeholder {
+        /* WebKit, Blink, Edge */
+        color: #999;
+      }
+      :-moz-placeholder {
+        /* Mozilla Firefox 4 to 18 */
+        color: #999;
+        opacity: 1;
+      }
+      ::-moz-placeholder {
+        /* Mozilla Firefox 19+ */
+        color: #999;
+        opacity: 1;
+      }
+      :-ms-input-placeholder {
+        /* Internet Explorer 10-11 */
+        color: #999;
+      }
     `}
   />
 )

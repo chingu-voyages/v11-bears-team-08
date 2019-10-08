@@ -4,6 +4,8 @@ export const theme = {
     secondary: '#EF33B1',
     tertiary: '#F6E6BC',
     dark: '#4933EF',
-    light: '#333'
+    light: '#333',
+    hotpink: '#EF336D',
+    lightblue: '#E4EAFA'
   }
 }

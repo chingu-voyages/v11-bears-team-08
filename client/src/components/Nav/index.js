@@ -54,10 +54,10 @@ export default () => {
             <Link to="/">Home</Link>
           </li>
           <li>
-            <Link to="/Login">Login</Link>
+            <Link to="/login">Login</Link>
           </li>
           <li>
-            <Link to="/Register">Register</Link>
+            <Link to="/register">Register</Link>
           </li>
           <li>
             <Settings>
