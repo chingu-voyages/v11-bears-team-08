@@ -160,11 +160,13 @@ COACH NEAR YOU"
         <Form onSubmit={(e) => handleSubmit(e)}>
           <Input
             placeholder="Email"
+            type="type"
             icon={<img src={require('../../assets/icons/email.svg')} alt="" />}
             setValue={setEmail}
           />
           <Input
             placeholder="Password"
+            type="password"
             icon={
               <img src={require('../../assets/icons/password.svg')} alt="" />
             }
@@ -172,11 +174,13 @@ COACH NEAR YOU"
           />
           <Input
             placeholder="First Name"
+            type="type"
             icon={<img src={require('../../assets/icons/notes.svg')} alt="" />}
             setValue={setFirstName}
           />
           <Input
             placeholder="Last Name"
+            type="type"
             icon={<img src={require('../../assets/icons/notes.svg')} alt="" />}
             setValue={setLastName}
           />

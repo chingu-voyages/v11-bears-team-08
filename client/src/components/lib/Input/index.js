@@ -31,10 +31,10 @@ const Icon = styled.div`
 // Icon is a render prop of an img tag with a src. but it can be anything!!
 // Yaay props and generalization
 
-export default ({ placeholder, icon, setValue }) => (
+export default ({ placeholder, type, icon, setValue }) => (
   <Container>
     <Input
-      type="text"
+      type={type}
       placeholder={placeholder}
       onChange={(e) => setValue(e.target.value)}
     />
