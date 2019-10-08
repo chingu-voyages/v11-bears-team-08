@@ -1,6 +1,19 @@
 import axios from 'axios'
 
-let api = axios.create({ baseURL: '/api' })
+let api
+
+function initApi(token) {
+  if (!token) {
+    //init api without token
+    api = axios.create({ baseURL: '/api' })
+  } else {
+    // if token exists then init authorized api
+    api = axios.create({
+      baseURL: '/api',
+      headers: { authorization: `Bearer ${token}` }
+    })
+  }
+}
 
 const authApi = {
   async signup(formData) {
@@ -8,7 +21,7 @@ const authApi = {
 
     if (!data.error) {
       // !TODO grab token
-      // api() data.token
+      initApi(data.token)
     }
 
     return data
@@ -19,7 +32,7 @@ const authApi = {
 
     if (!data.error) {
       // !TODO grab token
-      // api() data.token
+      initApi(data.token)
     }
 
     return data
@@ -31,6 +44,8 @@ const authApi = {
         withCredentials: true
       })
 
+      initApi(data.token)
+
       return data
     } catch (error) {
       if (error.response.status === 401) {
@@ -40,4 +55,4 @@ const authApi = {
   }
 }
 
-export { authApi }
+export { initApi, authApi }
