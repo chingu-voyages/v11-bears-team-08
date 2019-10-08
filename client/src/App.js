@@ -4,7 +4,7 @@ import { theme } from './utils/theme'
 import Reset from './Reset'
 import Global from './Global'
 import Nav from './components/Nav'
-import Landing from './pages/Landing'
+import Conversation from './pages/Conversation'
 
 const Container = styled.div`
   position: relative;
@@ -19,7 +19,7 @@ const App = () => (
     <Reset />
     <Global />
     <Nav />
-    <Landing />
+    <Conversation />
   </Container>
 )
 
