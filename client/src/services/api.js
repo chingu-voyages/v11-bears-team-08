@@ -15,24 +15,27 @@ function initApi(token) {
   }
 }
 
+// collection of authentication methods
 const authApi = {
   async signup(formData) {
-    const { data } = await api.post('/auth/signup', formData)
+    let { data } = await api.post('/auth/signup', formData)
 
+    // get user info to return it back and authorize api
     if (!data.error) {
-      // !TODO grab token
       initApi(data.token)
+      data = (await api.get('/auth/getLoggedUser')).data
     }
 
     return data
   },
 
   async signin(formData) {
-    const { data } = await api.post('/auth/signin', formData)
+    let { data } = await api.post('/auth/signin', formData)
 
+    // get user info to return it back and authorize api
     if (!data.error) {
-      // !TODO grab token
       initApi(data.token)
+      data = (await api.get('/auth/getLoggedUser')).data
     }
 
     return data
@@ -40,16 +43,22 @@ const authApi = {
 
   async getCachedUser() {
     try {
-      const { data } = await api.get('/auth/getCachedUser', {
+      let { data, status } = await api.get('/auth/getCachedToken', {
         withCredentials: true
       })
 
+      // status 204 means there is no cookie, meaning the user is not logged in
+      if (status === 204) {
+        return Promise.resolve({ user: null })
+      }
+
       initApi(data.token)
+      data = (await api.get('/auth/getLoggedUser')).data
 
       return data
     } catch (error) {
       if (error.response.status === 401) {
-        // TODO repond with appropriate api
+        return Promise.resolve({ user: null })
       }
     }
   }
