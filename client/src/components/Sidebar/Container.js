@@ -18,8 +18,8 @@ const Content = styled.div`
 export default ({ data, component: Component }) => (
   <Container>
     <Content>
-      {data.map((data) => (
-        <Component {...data} />
+      {data.map((d) => (
+        <Component {...d} />
       ))}
     </Content>
   </Container>

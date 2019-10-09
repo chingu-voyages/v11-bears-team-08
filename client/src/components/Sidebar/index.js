@@ -23,7 +23,7 @@ const Content = styled.div`
   position: relative;
   display: flex;
   flex-flow: column wrap;
-  align-items: center;
+  align-items: flex-start;
   width: calc(100% - 2em);
   height: 100%;
   & > * {
@@ -79,10 +79,10 @@ export default () => (
   <Sidebar>
     <Content>
       <UserInfo name="Kate" status={'online'} />
-      {/* <H2>upcoming appointments</H2> */}
-      {/* <Container data={appointments} component={Appointment} /> */}
-      {/* <H2>messages</H2> */}
-      {/* <Container data={messages} component={User} /> */}
+      <H2>upcoming appointments</H2>
+      <Container data={appointments} component={Appointment} />
+      <H2>messages</H2>
+      <Container data={messages} component={User} />
     </Content>
   </Sidebar>
 )

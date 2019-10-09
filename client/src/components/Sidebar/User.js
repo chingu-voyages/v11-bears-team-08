@@ -1,20 +1,21 @@
 import React from 'react'
 import styled from '@emotion/styled'
+import { theme } from '../../utils/theme'
 
 const Container = styled.div`
   display: flex;
   flex-flow: row nowrap;
-  padding: 0.75em;
+  padding: 0.75em 0 0.75em;
   border-radius: 2px;
   margin-bottom: 0.75em;
-  height: 3em;
+  align-items: center;
 `
 
 const Avatar = styled.div`
   border-radius: 50%;
   border: solid 2px white;
-  width: 20%;
-  height: 100%;
+  width: 3em;
+  height: 3em;
   overflow: hidden;
 
   img {
@@ -42,8 +43,9 @@ const Info = styled.div`
 `
 
 const H4 = styled.h4`
-  color: hotpink;
+  color: ${theme.colors.hotpink};
   font-weight: 400;
+  font-size: 1em !important;
 `
 
 const Description = styled.p`
