@@ -5,6 +5,7 @@ import Reset from './Reset'
 import Global from './Global'
 import Nav from './components/Nav'
 import Signup from './pages/Signup'
+import Signin from './pages/Signin'
 
 const Container = styled.div`
   position: relative;
@@ -19,7 +20,7 @@ const App = () => (
     <Reset />
     <Global />
     {/* <Nav /> */}
-    <Signup />
+    <Signin />
   </Container>
 )
 
