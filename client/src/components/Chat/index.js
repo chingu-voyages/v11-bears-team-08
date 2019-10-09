@@ -2,6 +2,11 @@ import React, { useState, useEffect } from 'react'
 import MessageInput from '../MessageInput'
 import Messages from '../Messages'
 import faker from 'faker'
+import styled from '@emotion/styled'
+
+const Container = styled.div`
+  width: 80%;
+`
 
 export default () => {
   const [messages, setMessages] = useState([])
@@ -47,13 +52,13 @@ export default () => {
   }
 
   return (
-    <div>
+    <Container>
       <Messages messages={messages} />
       <MessageInput
         sendMessage={sendMessage}
         input={input}
         handleChangeText={handleChangeText}
       />
-    </div>
+    </Container>
   )
 }

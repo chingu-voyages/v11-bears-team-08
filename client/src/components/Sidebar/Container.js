@@ -1,6 +1,5 @@
 import React from 'react'
 import styled from '@emotion/styled'
-import Button from './Button'
 import Appointment from './Appointment'
 import H2 from './H2'
 
@@ -23,6 +22,5 @@ export default ({ data, component: Component }) => (
         <Component {...data} />
       ))}
     </Content>
-    {/* <Button>View All Appointments</Button> */}
   </Container>
 )

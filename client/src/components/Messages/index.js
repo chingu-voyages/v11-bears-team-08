@@ -4,7 +4,7 @@ import Message from '../Message'
 import faker from 'faker'
 
 const Container = styled.div`
-  width: 90vw;
+  flex-basis: auto;
   height: 80vh;
   padding: 30px 0px;
   color: #333;

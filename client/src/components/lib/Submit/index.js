@@ -9,13 +9,9 @@ const Submit = styled.input`
   padding: 0.5em 0.7em;
   color: white;
   font-size: 0.75em;
-  align-self: flex-start;
-   {
-    /* positioned to the left */
-  }
+  align-self: flex-start; 
   cursor: pointer;
-   {
-    /* Cuz duh! */
+  outline: none;
   }
 `
 

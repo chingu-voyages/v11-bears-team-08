@@ -8,6 +8,7 @@ import Nav from './components/Nav'
 import Conversation from './pages/Conversation'
 import Landing from './pages/Landing'
 import Login from './pages/Login'
+import Dashboard from './pages/Dashboard'
 
 const Container = styled.div`
   position: relative;
@@ -26,6 +27,9 @@ const App = () => (
       <Switch>
         <Route path="/login">
           <Login />
+        </Route>
+        <Route path="/dashboard">
+          <Dashboard />
         </Route>
         <Route path="/">
           <Landing />

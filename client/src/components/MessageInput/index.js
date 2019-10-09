@@ -3,11 +3,13 @@ import styled from '@emotion/styled'
 
 const Form = styled.form`
   position: relative;
+  width: calc(100% - 5em);
+  margin: 0 auto;
 `
 
 const Input = styled.input`
   position: relative;
-  width: 90vw;
+  width: 100%;
   color: #333;
   padding: 25px 90px 25px 50px;
   border-radius: 5px;
