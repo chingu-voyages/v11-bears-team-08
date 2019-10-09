@@ -5,6 +5,7 @@ import Reset from './Reset'
 import Global from './Global'
 import Landing from './pages/Landing'
 import Signup from './pages/Signup'
+import Signin from './pages/Signin'
 import Conversation from './pages/Conversation'
 
 const Container = styled.div`
@@ -14,7 +15,7 @@ const Container = styled.div`
   height: 100%;
   min-height: 100vh;
 `
-export const UserContext = createContext([null, () => { }])
+export const UserContext = createContext([null, () => {}])
 
 function App() {
   const [user, setUser] = useState(null)
@@ -31,10 +32,9 @@ function App() {
             <Conversation />
           </Route>
 
-          <Route path="/login" render={() => <h1>We're in signin</h1>} />
+          <Route path="/login" component={Signin} />
           <Route path="/register" component={Signup} />
         </UserContext.Provider>
-
       </BrowserRouter>
     </Container>
   )
