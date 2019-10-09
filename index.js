@@ -29,6 +29,8 @@ setupAuthRoutes(authRouter)
 
 const setupPlacesRoutes = require('./src/utils/places')
 setupPlacesRoutes(app)
+const setupTrainersRoutes = require('./src/resources/components/trainer/trainer.route')
+setupTrainersRoutes(app)
 
 // deployment specific code that serves CRA's production build
 if (process.env.NODE_ENV == 'production') {

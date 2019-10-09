@@ -13,6 +13,10 @@ const Trainer = User.discriminator(
       type: String,
       maxlength: 500
     },
+    location: {
+      city_id: { type: String, index: true },
+      city: String
+    },
     specialities: [String],
     apointments: [String],
     reviews: [String]
