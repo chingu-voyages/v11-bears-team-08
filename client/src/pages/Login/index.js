@@ -34,7 +34,8 @@ const FormContainer = styled.div`
 const Form = styled.form`
   width: 325px;
   height: 40%;
-  border-radius: 2px;
+  min-height: 325px;
+  eborder-radius: 2px;
   display: flex;
   flex-flow: column wrap;
   align-items: center;
