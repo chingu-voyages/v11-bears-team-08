@@ -27,6 +27,9 @@ app.use('/api/auth', authRouter)
 const setupAuthRoutes = require('./src/utils/auth')
 setupAuthRoutes(authRouter)
 
+const setupPlacesRoutes = require('./src/utils/places')
+setupPlacesRoutes(app)
+
 // deployment specific code that serves CRA's production build
 if (process.env.NODE_ENV == 'production') {
   const path = require('path')
