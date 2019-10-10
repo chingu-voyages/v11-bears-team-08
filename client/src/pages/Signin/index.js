@@ -7,10 +7,6 @@ const Container = styled.main`
   width: 100vw;
   display: grid;
   grid-template-columns: 2fr 4fr;
-  /* width: 100vw;
-  display: grid;
-  text-align: center;
-  place-items: center; */
 `
 const Picture = styled.div`
   height: 100vh;
@@ -27,18 +23,20 @@ const PictureContainer = styled.section`
 const Form = styled.form`
   text-align: center;
   display: grid;
-  /* grid-template-rows: 1fr 2fr 2fr 1fr; */
-  /* flex-direction: column; */
+
   width: 400px;
   height: 400px;
-  /* background: whitesmoke; */
+
   place-self: center;
 `
 
-const FormTitle = styled.h2``
+const FormTitle = styled.h2`
+  font-weight: bold;
+`
 
 const Input = styled.input`
   outline: none;
+  background: #f5f6f7;
   border-width: 1px 1px 1px ${(props) => (props.error ? '10px' : '1px')};
   border-style: solid;
   border-color: lightgrey;
@@ -108,8 +106,8 @@ const SignUpLink = styled.button`
   cursor: pointer;
 `
 export default () => {
-  const [email, setEmail] = useState('your email...')
-  const [password, setPassword] = useState('your email...')
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
   const [pwdErr, setPwdErr] = useState(false)
   const [emailErr, setEmailErr] = useState(false)
 
