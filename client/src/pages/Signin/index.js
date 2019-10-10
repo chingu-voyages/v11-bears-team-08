@@ -40,6 +40,7 @@ const HelperText = styled.p`
   padding: 0;
   margin: 0 0 0 1em;
   font-size: 0.8rem;
+  color: ${(props) => (props.error ? 'red' : 'black')};
 `
 const HelperTextWrapper = styled.div`
   margin: 0 0 0.9em 0;
@@ -77,6 +78,7 @@ const NoAccountWrapper = styled.div`
 const NoAccount = styled.p``
 
 const SignUpLink = styled.button`
+  background: none;
   display: inline-block;
   text-decoration: underline;
   margin: 0;
@@ -86,25 +88,81 @@ const SignUpLink = styled.button`
 export default () => {
   const [email, setEmail] = useState('your email...')
   const [password, setPassword] = useState('your email...')
-  const handleInput = (e) => setEmail(e.target.value)
+  const [pwdErr, setPwdErr] = useState(false)
+  const [emailErr, setEmailErr] = useState(false)
+  const [validate, setValidate] = useState(false)
+
+  const validateEmailText = (text) => {
+    if (text.includes('@')) return
+    return 'error'
+  }
+
+  const updateEmailText = (value) => {
+    return value === 'error' ? setEmailErr(true) : setEmailErr(false)
+  }
+
+  const validatePwdText = (text) => {
+    if (text.length > 6) return
+    return 'error'
+  }
+
+  const updatePwdText = (value) => {
+    return value === 'error' ? setPwdErr(true) : setPwdErr(false)
+  }
+
+  const handleChange = (e) => {
+    if (e.target.name === 'email') {
+      setEmail(e.target.value)
+      updateEmailText(validateEmailText(e.target.value))
+    } else {
+      setPassword(e.target.value)
+      updatePwdText(validatePwdText(e.target.value))
+    }
+  }
+  const handleSubmit = (e) => {
+    e.preventDefault()
+
+    setEmail('')
+    setPassword('')
+  }
 
   return (
     <Container>
-      <Form>
+      <Form onSubmit={handleSubmit}>
         <FormTitle>Welcome Back!</FormTitle>
         <InputContainer>
-          <Input value={email} onChange={handleInput} />
+          <Input
+            value={email}
+            type="email"
+            name="email"
+            onChange={handleChange}
+          />
           <HelperTextWrapper>
-            <HelperText>Helper Text</HelperText>
+            {emailErr ? (
+              <HelperText error>Invalid email type</HelperText>
+            ) : (
+              <HelperText>Helper Text</HelperText>
+            )}
           </HelperTextWrapper>
-          <Input value="your password..." onChange={handleInput} />
+          <Input
+            value={password}
+            onChange={handleChange}
+            type="password"
+            name="password"
+          />
           <HelperTextWrapper>
-            <HelperText>Helper Text</HelperText>
+            {pwdErr ? (
+              <HelperText error>
+                Password must be more than 6 characters
+              </HelperText>
+            ) : (
+              <HelperText>Helper Text</HelperText>
+            )}
           </HelperTextWrapper>
         </InputContainer>
 
         <ButtonContainer>
-          <LoginButton type="login">Sign In</LoginButton>
+          <LoginButton type="submit">Sign In</LoginButton>
         </ButtonContainer>
         <NoAccountWrapper>
           <NoAccount>
