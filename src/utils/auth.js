@@ -1,7 +1,6 @@
 const jwt = require('jsonwebtoken')
 const bcrypt = require('bcryptjs')
-const Trainer = require('../resources/components/trainer/trainer.model')
-const Client = require('../resources/components/client/client.model')
+const User = require('../resources/components/user/user.model')
 
 // wrong!!!!!! should be assigned to an env var.
 const privateKey = 'gimly-privaaaaaaate'
@@ -16,7 +15,7 @@ async function signup(req, res) {
     !req.body.type ||
     (req.body.type !== 'trainer' && req.body.type !== 'client')
   ) {
-    res.json({ message: 'Invalid account type.' })
+    return res.json({ message: 'Invalid account type.' })
   }
 
   const user = { email: req.body.email, password: req.body.password }
@@ -24,10 +23,10 @@ async function signup(req, res) {
   try {
     let userSaved
 
-    if ((req.body.type = 'trainer')) {
-      userSaved = await Trainer.create(user)
+    if (req.body.type === 'trainer') {
+      userSaved = await User.create({ ...user, type: 'Trainer' })
     } else {
-      userSaved = await Client.create(user)
+      userSaved = await User.create({ ...user, type: 'Client' })
     }
 
     const token = newToken(userSaved._id)
@@ -45,7 +44,6 @@ async function signup(req, res) {
     if (error.errors && error.errors.password) {
       return res.status(400).json({ message: error.errors.password.message })
     }
-
     // in case any errors are not properly handled.
     return res.status(400).json({ message: error })
   }
