@@ -1,6 +1,8 @@
-import React, { useState } from 'react'
+import React, { useState, useContext } from 'react'
 import { Link } from 'react-router-dom'
 import styled from '@emotion/styled'
+import { authApi } from '../../services/api'
+import { UserContext } from '../../App'
 
 import touchImage from '../../assets/img/touch.jpg'
 
@@ -60,12 +62,26 @@ const LoginButton = styled.button`
 export default function Signin() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
+  const [error, setError] = useState('')
+  const [, setUser] = useContext(UserContext)
+
+  async function handleSubmit(e) {
+    e.preventDefault()
+
+    const { error, user } = await authApi.signin({ email, password })
+
+    if (error) {
+      return setError(error.message)
+    }
+
+    setUser(user)
+  }
 
   return (
     <Container>
-      <Form>
+      <Form onSubmit={handleSubmit}>
         <h2>Welcome Back!</h2>
-        <LoginError>Example error</LoginError>
+        {error && <LoginError>{error}</LoginError>}
 
         <Input
           value={email}
