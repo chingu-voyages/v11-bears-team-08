@@ -2,7 +2,7 @@ const mongoose = require('mongoose')
 const User = require('../user/user.model')
 
 const Client = User.discriminator(
-  'Client',
+  'client',
   new mongoose.Schema({
     favs: [String]
   })

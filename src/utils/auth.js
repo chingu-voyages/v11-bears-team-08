@@ -21,17 +21,14 @@ async function signup(req, res) {
   const user = { email: req.body.email, password: req.body.password }
 
   try {
-    let userSaved
-
-    if (req.body.type === 'trainer') {
-      userSaved = await User.create({ ...user, type: 'Trainer' })
-    } else {
-      userSaved = await User.create({ ...user, type: 'Client' })
-    }
+    const userSaved = await User.create({
+      ...user,
+      type: req.body.type || 'client'
+    })
 
     const token = newToken(userSaved._id)
 
-    return res.status(200).json({ token })
+    return res.json({ token })
   } catch (error) {
     if ((error.name = 'MongoError' && error.code === 11000)) {
       return res.status(400).json({ message: 'This email already exists.' })
@@ -57,18 +54,17 @@ async function signin(req, res) {
     .exec()
 
   if (!userExists) {
-    return res.status(400).send({ message: 'Email not valid.' })
+    return res.status(400).json({ message: 'Email not valid.' })
   }
 
   const validPassword = await bcrypt.compare(password, userExists.password)
 
-  if (validPassword) {
-    const token = newToken(userExists._id)
-
-    return res.status(200).send({ token })
+  if (!validPassword) {
+    return res.status(400).json({ message: 'Password not valid.' })
   }
 
-  return res.status(400).send({ message: 'Password not valid.' })
+  const token = newToken(userExists._id)
+  return res.json({ token })
 }
 
 module.exports = {
