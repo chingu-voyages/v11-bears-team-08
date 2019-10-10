@@ -10,6 +10,17 @@ function newToken(id) {
   return jwt.sign({ idToJSON }, privateKey, { expiresIn: '2h' })
 }
 
+function genCookieOpts() {
+  const afterThirtyDays = new Date(Date.now() + 30 * 24 * 60 * 60)
+
+  const cookieOptions = {
+    httpOnly: true,
+    expires: afterThirtyDays,
+    signed: true
+  }
+  return cookieOptions
+}
+
 async function signup(req, res) {
   if (
     !req.body.type ||
@@ -26,9 +37,9 @@ async function signup(req, res) {
       type: req.body.type || 'client'
     })
 
+    // send a signed cookie with the token
     const token = newToken(userSaved._id)
-
-    return res.json({ token })
+    return res.cookie('authToken', token, genCookieOpts()).json({ token })
   } catch (error) {
     if ((error.name = 'MongoError' && error.code === 11000)) {
       return res.status(400).json({ message: 'This email already exists.' })
@@ -63,8 +74,9 @@ async function signin(req, res) {
     return res.status(400).json({ message: 'Password not valid.' })
   }
 
+  // send a signed cookie with the token
   const token = newToken(userExists._id)
-  return res.json({ token })
+  return res.cookie('authToken', token, genCookieOpts()).json({ token })
 }
 
 module.exports = {

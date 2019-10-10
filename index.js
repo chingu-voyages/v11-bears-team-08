@@ -1,6 +1,7 @@
 const express = require('express')
 const morgan = require('morgan')
 const mongoose = require('mongoose')
+const cookieParser = require('cookie-parser')
 
 // load dev env variables using dotenv
 if (process.env.NODE_ENV !== 'production') {
@@ -9,7 +10,11 @@ if (process.env.NODE_ENV !== 'production') {
 
 const app = express()
 
-app.use(express.json(), express.urlencoded({ extended: true }))
+app.use(
+  express.json(),
+  cookieParser('secret'),
+  express.urlencoded({ extended: true })
+)
 if (process.env.NODE_ENV === 'production') {
   app.use(morgan('combined'))
 } else {
