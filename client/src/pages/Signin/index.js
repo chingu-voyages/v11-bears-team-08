@@ -22,7 +22,12 @@ const FormTitle = styled.h2``
 
 const Input = styled.input`
   outline: none;
-  border: 1px lightgray solid;
+  border-width: 1px 1px 1px ${(props) => (props.error ? '10px' : '1px')};
+  border-style: solid;
+  border-color: lightgrey;
+
+  ${(props) => (props.error ? 'border-left-color: red;' : null)}
+  transition: .2s ease-in-out;
   margin-bottom: 0.1em;
   padding: 1rem 1.2rem;
   width: 80%;
@@ -90,7 +95,6 @@ export default () => {
   const [password, setPassword] = useState('your email...')
   const [pwdErr, setPwdErr] = useState(false)
   const [emailErr, setEmailErr] = useState(false)
-  const [validate, setValidate] = useState(false)
 
   const validateEmailText = (text) => {
     if (text.includes('@')) return
@@ -136,6 +140,7 @@ export default () => {
             type="email"
             name="email"
             onChange={handleChange}
+            error={emailErr}
           />
           <HelperTextWrapper>
             {emailErr ? (
@@ -149,6 +154,7 @@ export default () => {
             onChange={handleChange}
             type="password"
             name="password"
+            error={pwdErr}
           />
           <HelperTextWrapper>
             {pwdErr ? (
