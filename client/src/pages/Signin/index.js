@@ -1,21 +1,38 @@
 import React, { useState } from 'react'
 import styled from '@emotion/styled'
+import touchImage from '../../assets/img/touch.jpg'
 
 const Container = styled.main`
   height: 100vh;
   width: 100vw;
   display: grid;
+  grid-template-columns: 2fr 4fr;
+  /* width: 100vw;
+  display: grid;
   text-align: center;
-  place-items: center;
+  place-items: center; */
+`
+const Picture = styled.div`
+  height: 100vh;
+  background-image: url(${touchImage});
+  background-size: cover;
+  background-position: center;
+`
+
+const PictureContainer = styled.section`
+  height: 100vh;
+  width: 100%;
 `
 
 const Form = styled.form`
+  text-align: center;
   display: grid;
   /* grid-template-rows: 1fr 2fr 2fr 1fr; */
   /* flex-direction: column; */
   width: 400px;
   height: 400px;
-  background: whitesmoke;
+  /* background: whitesmoke; */
+  place-self: center;
 `
 
 const FormTitle = styled.h2``
@@ -176,6 +193,9 @@ export default () => {
           </NoAccount>
         </NoAccountWrapper>
       </Form>
+      <PictureContainer>
+        <Picture />
+      </PictureContainer>
     </Container>
   )
 }
