@@ -2,7 +2,7 @@ const mongoose = require('mongoose')
 const User = require('../user/user.model')
 
 const Trainer = User.discriminator(
-  'Trainer',
+  'trainer',
   new mongoose.Schema({
     status: {
       type: String,

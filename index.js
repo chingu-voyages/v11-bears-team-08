@@ -1,6 +1,7 @@
 const express = require('express')
 const morgan = require('morgan')
 const mongoose = require('mongoose')
+const cookieParser = require('cookie-parser')
 
 // load dev env variables using dotenv
 if (process.env.NODE_ENV !== 'production') {
@@ -9,16 +10,22 @@ if (process.env.NODE_ENV !== 'production') {
 
 const app = express()
 
-app.use(express.json(), express.urlencoded({ extended: true }))
+app.use(
+  express.json(),
+  cookieParser('secret'),
+  express.urlencoded({ extended: true })
+)
 if (process.env.NODE_ENV === 'production') {
   app.use(morgan('combined'))
 } else {
   app.use(morgan('dev'))
 }
 
-const { signup, signin } = require('./src/utils/auth')
-app.post('/signup', signup)
-app.post('/signin', signin)
+const authController = require('./src/utils/auth')
+app.post('/signup', authController.signup)
+app.post('/signin', authController.signin)
+app.post('/getCachedToken', authController.getCachedToken)
+app.get('/getLoggedUser', authController.getLoggedUser)
 
 // deployment specific code that serves CRA's production build
 if (process.env.NODE_ENV == 'production') {

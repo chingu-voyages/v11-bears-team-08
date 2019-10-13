@@ -1,7 +1,6 @@
 const jwt = require('jsonwebtoken')
 const bcrypt = require('bcryptjs')
-const Trainer = require('../resources/components/trainer/trainer.model')
-const Client = require('../resources/components/client/client.model')
+const User = require('../resources/components/user/user.model')
 
 // wrong!!!!!! should be assigned to an env var.
 const privateKey = 'gimly-privaaaaaaate'
@@ -11,28 +10,82 @@ function newToken(id) {
   return jwt.sign({ idToJSON }, privateKey, { expiresIn: '2h' })
 }
 
+function genCookieOpts() {
+  const afterThirtyDays = new Date(Date.now() + 30 * 24 * 60 * 60)
+
+  const cookieOptions = {
+    httpOnly: true,
+    expires: afterThirtyDays,
+    signed: true
+  }
+  return cookieOptions
+}
+
+async function getCachedToken(req, res) {
+  const { authToken } = req.signedCookies
+
+  if (!authToken) {
+    return res.status(204).send()
+  }
+
+  try {
+    await jwt.verify(authToken, privateKey)
+
+    return res.json({ token: authToken })
+  } catch (error) {
+    if (error.name === 'JsonWebTokenError')
+      return res.status(401).json({ error })
+
+    return res.status(500).send()
+  }
+}
+
+async function getLoggedUser(req, res) {
+  const { authorization } = req.headers
+
+  if (!authorization) {
+    return res.status(204).send()
+  }
+
+  const token = authorization.split(' ')[1]
+
+  try {
+    const { idToJSON: userId } = await jwt.verify(token, privateKey)
+    const user = await User.find({ _id: userId })
+
+    if (!user) {
+      return res.json({ message: 'No User Found' })
+    }
+
+    return res.json({ user })
+  } catch (error) {
+    if (error.name === 'JsonWebTokenError') {
+      return res.status(401).json({ error })
+    }
+
+    return res.status(500).send()
+  }
+}
+
 async function signup(req, res) {
   if (
     !req.body.type ||
     (req.body.type !== 'trainer' && req.body.type !== 'client')
   ) {
-    res.json({ message: 'Invalid account type.' })
+    return res.json({ message: 'Invalid account type.' })
   }
 
   const user = { email: req.body.email, password: req.body.password }
 
   try {
-    let userSaved
+    const userSaved = await User.create({
+      ...user,
+      type: req.body.type || 'client'
+    })
 
-    if ((req.body.type = 'trainer')) {
-      userSaved = await Trainer.create(user)
-    } else {
-      userSaved = await Client.create(user)
-    }
-
+    // send a signed cookie with the token
     const token = newToken(userSaved._id)
-
-    return res.status(200).json({ token })
+    return res.cookie('authToken', token, genCookieOpts()).json({ token })
   } catch (error) {
     if ((error.name = 'MongoError' && error.code === 11000)) {
       return res.status(400).json({ message: 'This email already exists.' })
@@ -45,7 +98,6 @@ async function signup(req, res) {
     if (error.errors && error.errors.password) {
       return res.status(400).json({ message: error.errors.password.message })
     }
-
     // in case any errors are not properly handled.
     return res.status(400).json({ message: error })
   }
@@ -59,21 +111,23 @@ async function signin(req, res) {
     .exec()
 
   if (!userExists) {
-    return res.status(400).send({ message: 'Email not valid.' })
+    return res.status(400).json({ message: 'Email not valid.' })
   }
 
   const validPassword = await bcrypt.compare(password, userExists.password)
 
-  if (validPassword) {
-    const token = newToken(userExists._id)
-
-    return res.status(200).send({ token })
+  if (!validPassword) {
+    return res.status(400).json({ message: 'Password not valid.' })
   }
 
-  return res.status(400).send({ message: 'Password not valid.' })
+  // send a signed cookie with the token
+  const token = newToken(userExists._id)
+  return res.cookie('authToken', token, genCookieOpts()).json({ token })
 }
 
 module.exports = {
-  signup: signup,
-  signin: signin
+  signup,
+  signin,
+  getCachedToken,
+  getLoggedUser
 }
