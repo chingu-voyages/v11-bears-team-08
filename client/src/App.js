@@ -1,5 +1,5 @@
 import React from 'react'
-import { BrowserRouter, Route } from 'react-router-dom'
+import { BrowserRouter, Route, Switch } from 'react-router-dom'
 import styled from '@emotion/styled'
 import { theme } from './utils/theme'
 import Reset from './Reset'
@@ -23,18 +23,20 @@ const App = () => (
     <Global />
     <Nav />
     <BrowserRouter>
-      <Route path="/" exact>
-        <Landing />
-      </Route>
-      <Route path="/conversationTest">
-        <Conversation />
-      </Route>
-      <Route path="/settings">
-        <UserSettings />
-      </Route>
+      <Switch>
+        <Route path="/" exact>
+          <Landing />
+        </Route>
+        <Route path="/conversationTest">
+          <Conversation />
+        </Route>
+        <Route path="/settings">
+          <UserSettings />
+        </Route>
 
-      <Route path="/signin" render={() => <h1>We're in signin</h1>} />
-      <Route path="/signup" render={() => <h1>We're in signup</h1>} />
+        <Route path="/signin" render={() => <h1>We're in signin</h1>} />
+        <Route path="/signup" render={() => <h1>We're in signup</h1>} />
+      </Switch>
     </BrowserRouter>
   </Container>
 )
