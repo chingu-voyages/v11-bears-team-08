@@ -53,15 +53,22 @@ const Button = styled.button`
   margin-left: auto;
   margin-right: 5%;
 `
-const LabeledInput = ({ label, type, name, value }) => (
+const LabeledInput = ({ label, type, name, value, onChange }) => (
   <Label>
     {label}
 
-    <Input type={type} value={value} name={name} />
+    <Input type={type} value={value} name={name} onChange={onChange} />
   </Label>
 )
 
 function UserSettings() {
+  const [firstName, setFirstName] = useState('')
+  const [lastName, setLastName] = useState('')
+  const [email, setEmail] = useState('')
+  const [newPassword, setNewPassword] = useState('')
+  const [currentPassword, setCurrentPassword] = useState('')
+  const [errors, setErrors] = useState([])
+
   return (
     <Container>
       <Form>
@@ -74,30 +81,25 @@ function UserSettings() {
             label="First Name"
             type="text"
             name="firstName"
-            value="Actually just a firstname placeholder"
+            value={firstName}
           />
           <LabeledInput
             label="Last Name"
             type="text"
             name="lastName"
-            value="Not last name"
+            value={lastName}
           />
         </FieldSet>
         <FieldSet>
           <div>
             <legend>Account Settings</legend>
           </div>
-          <LabeledInput
-            label="email"
-            type="email"
-            name="email"
-            value="your email plz"
-          />
+          <LabeledInput label="email" type="email" name="email" value={email} />
           <LabeledInput
             label="New Password"
             type="password"
             name="newPassword"
-            value=""
+            value={newPassword}
           />
         </FieldSet>
 
@@ -109,7 +111,7 @@ function UserSettings() {
             label="Current Password"
             type="password"
             name="currentPassword"
-            value=""
+            value={currentPassword}
           />
         </FieldSet>
         <Button type="submit">Submit</Button>
