@@ -7,6 +7,7 @@ import Global from './Global'
 import Nav from './components/Nav'
 import Landing from './pages/Landing'
 import Conversation from './pages/Conversation'
+import UserSettings from './pages/UserSettings'
 
 const Container = styled.div`
   position: relative;
@@ -27,6 +28,9 @@ const App = () => (
       </Route>
       <Route path="/conversationTest">
         <Conversation />
+      </Route>
+      <Route path="/settings">
+        <UserSettings />
       </Route>
 
       <Route path="/signin" render={() => <h1>We're in signin</h1>} />
