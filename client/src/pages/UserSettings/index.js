@@ -2,7 +2,6 @@ import React, { useState } from 'react'
 import styled from '@emotion/styled'
 
 const Container = styled.div`
-  background-color: whitesmoke;
   height: 100vh;
   display: grid;
   place-items: center;
@@ -10,9 +9,12 @@ const Container = styled.div`
 
 const Form = styled.form`
   background-color: white;
-  height: 80%;
-  width: 80%;
+  height: 90%;
+  width: 60%;
+  border-radius: 10px;
   padding: 2em 5%;
+  /* box-shadow: 0 2px 1px -1px rgba(0, 0, 0, 0.2), 0 1px 1px 0 rgba(0, 0, 0, 0.14),
+    0 1px 3px 0 rgba(0, 0, 0, 0.12); */
 `
 const Avatar = styled.div`
   background-color: #9b51e0;
@@ -23,10 +25,15 @@ const Avatar = styled.div`
 `
 
 const Input = styled.input`
-  background-color: white;
-  width: 400px;
-  padding: 5px 10px;
+  background-color: #f5f6f7;
+  width: 320px;
+  padding: 1rem 1.2rem;
   font-size: 1.1em;
+  border-width: 1px;
+  border-style: solid;
+  border-color: lightgrey;
+  font-size: 0.9rem;
+  border-radius: 10px;
 `
 
 const Label = styled.label`
@@ -35,27 +42,36 @@ const Label = styled.label`
   margin-top: 20px;
   text-align: right;
 `
+const LabelTitle = styled.span`
+  text-transform: uppercase;
+  margin-right: 1em;
+`
 const FieldSet = styled.fieldset`
-  background-color: whitesmoke;
-
   margin: 2em 0;
+
+  min-width: 66.6%;
+
+  border-radius: 10px;
+`
+const Legend = styled.legend`
+  font-size: 1.4rem;
+  font-weight: bold;
 `
 
 const Button = styled.button`
   display: block;
   background-color: #9b51e0;
   padding: 0.8em 0.9em;
-  min-width: 200px;
+  min-width: 320px;
   border-radius: 20px;
   color: white;
   font-size: 1.2em;
   text-transform: uppercase;
   margin-left: auto;
-  margin-right: 5%;
 `
 const LabeledInput = ({ label, type, name, value, onChange }) => (
   <Label>
-    {label}
+    <LabelTitle>{label}</LabelTitle>
 
     <Input type={type} value={value} name={name} onChange={onChange} />
   </Label>
@@ -75,7 +91,7 @@ function UserSettings() {
         <Avatar />
         <FieldSet>
           <div>
-            <legend>Personal Information</legend>
+            <Legend>Personal Information</Legend>
           </div>
           <LabeledInput
             label="First Name"
@@ -92,7 +108,7 @@ function UserSettings() {
         </FieldSet>
         <FieldSet>
           <div>
-            <legend>Account Settings</legend>
+            <Legend>Account Settings</Legend>
           </div>
           <LabeledInput label="email" type="email" name="email" value={email} />
           <LabeledInput
@@ -105,7 +121,7 @@ function UserSettings() {
 
         <FieldSet>
           <div>
-            <legend>TODO: needs to be changed </legend>
+            <Legend>TODO: needs to be changed </Legend>
           </div>
           <LabeledInput
             label="Current Password"
