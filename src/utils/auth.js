@@ -68,20 +68,15 @@ async function getLoggedUser(req, res) {
 }
 
 async function signup(req, res) {
-  if (
-    !req.body.type ||
-    (req.body.type !== 'trainer' && req.body.type !== 'client')
-  ) {
+  const { email, password } = req.body
+  const type = req.body.type || 'client'
+
+  if (!type || (type !== 'trainer' && type !== 'client')) {
     return res.json({ message: 'Invalid account type.' })
   }
 
-  const user = { email: req.body.email, password: req.body.password }
-
   try {
-    const userSaved = await User.create({
-      ...user,
-      type: req.body.type || 'client'
-    })
+    const userSaved = await User.create({ email, password, type })
 
     // send a signed cookie with the token
     const token = newToken(userSaved._id)
@@ -91,22 +86,26 @@ async function signup(req, res) {
       return res.status(400).json({ message: 'This email already exists.' })
     }
 
-    if (error.errors && error.errors.email) {
-      return res.status(400).json({ message: error.errors.email.message })
+    const { errors } = error
+    if (errors) {
+      if (errors.email) {
+        return res.status(400).json({ message: errors.email.message })
+      }
+      if (errors.password) {
+        return res.status(400).json({ message: errors.password.message })
+      }
     }
 
-    if (error.errors && error.errors.password) {
-      return res.status(400).json({ message: error.errors.password.message })
-    }
     // in case any errors are not properly handled.
     return res.status(400).json({ message: error })
   }
 }
 
 async function signin(req, res) {
+  const { email } = req.body
   const password = req.body.password || ''
 
-  const userExists = await User.findOne({ email: req.body.email })
+  const userExists = await User.findOne({ email })
 
   if (!userExists) {
     return res.status(400).json({ message: 'Email not valid.' })
