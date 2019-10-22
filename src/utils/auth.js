@@ -80,10 +80,10 @@ async function signup(req, res) {
   }
 
   try {
-    const userSaved = await User.create({ email, password, type })
+    const user = await User.create({ email, password, type })
 
     // send a signed cookie with the token
-    const token = newToken(userSaved._id)
+    const token = newToken(user._id)
     return res.cookie('authToken', token, genCookieOpts()).json({ token })
   } catch (error) {
     if (error.name === 'MongoError' && error.code === 11000) {
@@ -118,14 +118,14 @@ async function signin(req, res) {
     res.status(400).send()
   }
 
-  const userExists = await User.findOne({ email })
+  const user = await User.findOne({ email })
 
-  if (!userExists || !(await userExists.isValidPassword(password))) {
+  if (!user || !(await user.isValidPassword(password))) {
     return res.status(400).json({ error: { message: 'Invalid credentials' } })
   }
 
   // send a signed cookie with the token
-  const token = newToken(userExists._id)
+  const token = newToken(user._id)
   return res.cookie('authToken', token, genCookieOpts()).json({ token })
 }
 
