@@ -3,40 +3,6 @@ const omit = require('lodash.omit')
 const User = require('../resources/components/user/user.model')
 const privateKey = process.env.JWT_SECRET || 'gimly-privaaaaaaate'
 
-function signUserToken(id) {
-  return jwt.sign({ id }, privateKey, { expiresIn: '7d' })
-}
-
-function getCookieOpts() {
-  const afterSevenDays = new Date(Date.now() + 7 * 24 * 60 * 60)
-
-  const cookieOptions = {
-    httpOnly: true,
-    expires: afterSevenDays,
-    signed: true
-  }
-  return cookieOptions
-}
-
-async function getCachedToken(req, res) {
-  const { authToken } = req.signedCookies
-
-  if (!authToken) {
-    return res.status(204).send()
-  }
-
-  try {
-    await jwt.verify(authToken, privateKey)
-
-    return res.json({ token: authToken })
-  } catch (error) {
-    if (error.name === 'JsonWebTokenError')
-      return res.status(401).json({ error })
-
-    return res.status(500).send()
-  }
-}
-
 async function getLoggedUser(req, res) {
   const { authorization } = req.headers
 
@@ -62,6 +28,43 @@ async function getLoggedUser(req, res) {
 
     return res.status(500).send()
   }
+}
+
+async function getCachedToken(req, res) {
+  const { authToken } = req.signedCookies
+
+  if (!authToken) {
+    return res.status(204).send()
+  }
+
+  try {
+    await jwt.verify(authToken, privateKey)
+
+    return res.json({ token: authToken })
+  } catch (error) {
+    if (error.name === 'JsonWebTokenError')
+      return res.status(401).json({ error })
+
+    return res.status(500).send()
+  }
+}
+
+async function signin(req, res) {
+  const { email, password } = req.body
+
+  if (!email || !password) {
+    res.status(400).send()
+  }
+
+  const user = await User.findOne({ email })
+
+  if (!user || !(await user.isValidPassword(password))) {
+    return res.json({ error: { message: 'Invalid credentials' } })
+  }
+
+  // send a signed cookie with the token
+  const token = signUserToken(user._id)
+  return res.cookie('authToken', token, getCookieOpts()).json({ token })
 }
 
 async function signup(req, res) {
@@ -108,24 +111,6 @@ async function signup(req, res) {
   }
 }
 
-async function signin(req, res) {
-  const { email, password } = req.body
-
-  if (!email || !password) {
-    res.status(400).send()
-  }
-
-  const user = await User.findOne({ email })
-
-  if (!user || !(await user.isValidPassword(password))) {
-    return res.json({ error: { message: 'Invalid credentials' } })
-  }
-
-  // send a signed cookie with the token
-  const token = signUserToken(user._id)
-  return res.cookie('authToken', token, getCookieOpts()).json({ token })
-}
-
 module.exports = {
   signup,
   signin,
@@ -133,6 +118,22 @@ module.exports = {
   getLoggedUser
 }
 
+/****** Utilities ******/
 function getSafeUser(user) {
   return omit(user, ['__v', '_id', 'password'])
+}
+
+function signUserToken(id) {
+  return jwt.sign({ id }, privateKey, { expiresIn: '7d' })
+}
+
+function getCookieOpts() {
+  const afterSevenDays = new Date(Date.now() + 7 * 24 * 60 * 60)
+
+  const cookieOptions = {
+    httpOnly: true,
+    expires: afterSevenDays,
+    signed: true
+  }
+  return cookieOptions
 }
