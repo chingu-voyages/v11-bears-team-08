@@ -71,6 +71,10 @@ async function signup(req, res) {
   const { email, password } = req.body
   const type = req.body.type || 'client'
 
+  if (!email || !password) {
+    return res.status(400).send()
+  }
+
   if (!type || (type !== 'trainer' && type !== 'client')) {
     return res.json({ message: 'Invalid account type.' })
   }
@@ -102,8 +106,11 @@ async function signup(req, res) {
 }
 
 async function signin(req, res) {
-  const { email } = req.body
-  const password = req.body.password || ''
+  const { email, password } = req.body
+
+  if (!email || !password) {
+    res.status(400).send()
+  }
 
   const userExists = await User.findOne({ email })
 
