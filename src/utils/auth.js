@@ -1,5 +1,4 @@
 const jwt = require('jsonwebtoken')
-const bcrypt = require('bcryptjs')
 const omit = require('lodash.omit')
 const User = require('../resources/components/user/user.model')
 
@@ -113,7 +112,7 @@ async function signin(req, res) {
     return res.status(400).json({ message: 'Email not valid.' })
   }
 
-  const validPassword = await bcrypt.compare(password, userExists.password)
+  const validPassword = await userExists.isValidPassword(password)
 
   if (!validPassword) {
     return res.status(400).json({ message: 'Password not valid.' })
