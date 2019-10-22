@@ -3,6 +3,14 @@ const omit = require('lodash.omit')
 const User = require('../resources/components/user/user.model')
 const privateKey = process.env.JWT_SECRET || 'gimly-privaaaaaaate'
 
+// configures all auth routes, effectively making this file a module
+module.exports = function setupAuthRoutes(router) {
+  router.get('/getLoggedUser', getLoggedUser)
+  router.post('/getCachedToken', getCachedToken)
+  router.post('/signin', signin)
+  router.post('/signup', signup)
+}
+
 async function getLoggedUser(req, res) {
   const { authorization } = req.headers
 
@@ -109,13 +117,6 @@ async function signup(req, res) {
     // other errors would be server generated errors
     return res.status(500).send()
   }
-}
-
-module.exports = {
-  signup,
-  signin,
-  getCachedToken,
-  getLoggedUser
 }
 
 /****** Utilities ******/
