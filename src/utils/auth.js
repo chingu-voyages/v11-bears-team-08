@@ -54,7 +54,7 @@ async function getLoggedUser(req, res) {
     const user = await User.findOne({ _id: userId })
 
     if (!user) {
-      return res.json({ message: 'No User Found' })
+      return res.json({ error: { message: 'No User Found' } })
     }
 
     return res.json({ user: getSafeUser(user.toObject()) })
@@ -76,7 +76,7 @@ async function signup(req, res) {
   }
 
   if (type !== 'trainer' && type !== 'client') {
-    return res.json({ message: 'Invalid account type.' })
+    return res.json({ error: { message: 'Invalid account type.' } })
   }
 
   try {
@@ -87,21 +87,27 @@ async function signup(req, res) {
     return res.cookie('authToken', token, genCookieOpts()).json({ token })
   } catch (error) {
     if (error.name === 'MongoError' && error.code === 11000) {
-      return res.status(400).json({ message: 'This email already exists.' })
+      return res.status(400).json({
+        error: { field: 'email', message: 'This email already exists.' }
+      })
     }
 
     const { errors } = error
     if (errors) {
       if (errors.email) {
-        return res.status(400).json({ message: errors.email.message })
+        return res.status(400).json({
+          error: { field: 'email', message: errors.email.message }
+        })
       }
       if (errors.password) {
-        return res.status(400).json({ message: errors.password.message })
+        return res.status(400).json({
+          error: { field: 'password', message: errors.password.message }
+        })
       }
     }
 
-    // in case any errors are not properly handled.
-    return res.status(400).json({ message: error })
+    // other errors would be server generated errors
+    return res.status(500).send()
   }
 }
 
@@ -115,7 +121,7 @@ async function signin(req, res) {
   const userExists = await User.findOne({ email })
 
   if (!userExists || !(await userExists.isValidPassword(password))) {
-    return res.status(400).json({ message: 'Invalid credentials' })
+    return res.status(400).json({ error: { message: 'Invalid credentials' } })
   }
 
   // send a signed cookie with the token
