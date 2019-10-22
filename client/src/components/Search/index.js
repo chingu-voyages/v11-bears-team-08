@@ -1,8 +1,6 @@
-/** @jsx jsx */
 import React from 'react'
 import styled from '@emotion/styled'
 import { theme } from '../../utils/theme'
-import { jsx } from '@emotion/core'
 
 const Form = styled.div`
   position: relative;

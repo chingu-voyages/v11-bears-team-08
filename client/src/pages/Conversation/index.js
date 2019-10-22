@@ -1,10 +1,6 @@
-/** @jsx jsx */
-import React, { useRef, useEffect } from 'react'
-import { jsx, css, keyframes } from '@emotion/core'
+import React from 'react'
 import styled from '@emotion/styled'
-import Search from '../../components/Search'
 import Chat from '../../components/Chat'
-import { theme } from '../../utils/theme'
 
 const Container = styled.div`
   position: relative;

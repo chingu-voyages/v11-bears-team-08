@@ -1,10 +1,8 @@
 import React from 'react'
 import { BrowserRouter, Route } from 'react-router-dom'
 import styled from '@emotion/styled'
-import { theme } from './utils/theme'
 import Reset from './Reset'
 import Global from './Global'
-import Nav from './components/Nav'
 import Landing from './pages/Landing'
 import Conversation from './pages/Conversation'
 
@@ -20,7 +18,6 @@ const App = () => (
   <Container>
     <Reset />
     <Global />
-    <Nav />
     <BrowserRouter>
       <Route path="/" exact>
         <Landing />
@@ -29,8 +26,8 @@ const App = () => (
         <Conversation />
       </Route>
 
-      <Route path="/signin" render={() => <h1>We're in signin</h1>} />
-      <Route path="/signup" render={() => <h1>We're in signup</h1>} />
+      <Route path="/login" render={() => <h1>We're in signin</h1>} />
+      <Route path="/register" render={() => <h1>We're in signup</h1>} />
     </BrowserRouter>
   </Container>
 )
