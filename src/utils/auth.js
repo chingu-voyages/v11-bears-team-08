@@ -87,7 +87,7 @@ async function signup(req, res) {
     const token = newToken(userSaved._id)
     return res.cookie('authToken', token, genCookieOpts()).json({ token })
   } catch (error) {
-    if ((error.name = 'MongoError' && error.code === 11000)) {
+    if (error.name === 'MongoError' && error.code === 11000) {
       return res.status(400).json({ message: 'This email already exists.' })
     }
 
