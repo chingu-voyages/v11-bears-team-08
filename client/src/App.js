@@ -19,8 +19,8 @@ const App = () => (
   <Container>
     <Reset />
     <Global />
-    <Nav />
     <BrowserRouter>
+      <Nav />
       <Route path="/" exact>
         <Landing />
       </Route>
