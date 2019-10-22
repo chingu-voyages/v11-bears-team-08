@@ -1,6 +1,5 @@
-import React, { useContext } from 'react'
+import React from 'react'
 import styled from '@emotion/styled'
-import { mq } from '../../utils/responsiveUtils'
 import { BrowserRouter as Router, Link } from 'react-router-dom'
 import { theme } from '../../utils/theme'
 

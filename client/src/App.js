@@ -1,7 +1,6 @@
 import React from 'react'
 import { BrowserRouter, Route } from 'react-router-dom'
 import styled from '@emotion/styled'
-import { theme } from './utils/theme'
 import Reset from './Reset'
 import Global from './Global'
 import Nav from './components/Nav'
