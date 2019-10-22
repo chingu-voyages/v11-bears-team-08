@@ -3,7 +3,6 @@ import { BrowserRouter, Route } from 'react-router-dom'
 import styled from '@emotion/styled'
 import Reset from './Reset'
 import Global from './Global'
-import Nav from './components/Nav'
 import Landing from './pages/Landing'
 import Conversation from './pages/Conversation'
 
@@ -20,7 +19,6 @@ const App = () => (
     <Reset />
     <Global />
     <BrowserRouter>
-      <Nav />
       <Route path="/" exact>
         <Landing />
       </Route>

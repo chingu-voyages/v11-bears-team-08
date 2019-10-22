@@ -1,6 +1,7 @@
 import React from 'react'
 import { keyframes } from '@emotion/core'
 import styled from '@emotion/styled'
+import Nav from '../../components/Nav'
 import Search from '../../components/Search'
 import { theme } from '../../utils/theme'
 
@@ -85,6 +86,7 @@ const Bottle = styled.img`
 
 export default () => (
   <Container>
+    <Nav />
     <TopLeftArt src={require('../../assets/img/top-left-art.svg')} alt="" />
     <BottomRightArt
       src={require('../../assets/img/bottom-right-art.svg')}
