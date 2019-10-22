@@ -75,7 +75,7 @@ async function signup(req, res) {
     return res.status(400).send()
   }
 
-  if (!type || (type !== 'trainer' && type !== 'client')) {
+  if (type !== 'trainer' && type !== 'client') {
     return res.json({ message: 'Invalid account type.' })
   }
 
