@@ -1,13 +1,10 @@
 const jwt = require('jsonwebtoken')
 const omit = require('lodash.omit')
 const User = require('../resources/components/user/user.model')
-
-// wrong!!!!!! should be assigned to an env var.
-const privateKey = 'gimly-privaaaaaaate'
+const privateKey = process.env.JWT_SECRET || 'gimly-privaaaaaaate'
 
 function signUserToken(id) {
-  const idToJSON = JSON.parse(JSON.stringify(id))
-  return jwt.sign({ idToJSON }, privateKey, { expiresIn: '7d' })
+  return jwt.sign({ id }, privateKey, { expiresIn: '7d' })
 }
 
 function getCookieOpts() {
@@ -50,7 +47,7 @@ async function getLoggedUser(req, res) {
   const token = authorization.split(' ')[1]
 
   try {
-    const { idToJSON: userId } = await jwt.verify(token, privateKey)
+    const { id: userId } = await jwt.verify(token, privateKey)
     const user = await User.findOne({ _id: userId })
 
     if (!user) {
