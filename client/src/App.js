@@ -28,8 +28,8 @@ const App = () => (
         <Conversation />
       </Route>
 
-      <Route path="/signin" render={() => <h1>We're in signin</h1>} />
-      <Route path="/signup" render={() => <h1>We're in signup</h1>} />
+      <Route path="/login" render={() => <h1>We're in signin</h1>} />
+      <Route path="/register" render={() => <h1>We're in signup</h1>} />
     </BrowserRouter>
   </Container>
 )
