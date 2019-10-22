@@ -84,7 +84,7 @@ async function signup(req, res) {
     return res.cookie('authToken', token, getCookieOpts()).json({ token })
   } catch (error) {
     if (error.name === 'MongoError' && error.code === 11000) {
-      return res.status(400).json({
+      return res.json({
         error: { field: 'email', message: 'This email already exists.' }
       })
     }
@@ -92,12 +92,12 @@ async function signup(req, res) {
     const { errors } = error
     if (errors) {
       if (errors.email) {
-        return res.status(400).json({
+        return res.json({
           error: { field: 'email', message: errors.email.message }
         })
       }
       if (errors.password) {
-        return res.status(400).json({
+        return res.json({
           error: { field: 'password', message: errors.password.message }
         })
       }
@@ -118,7 +118,7 @@ async function signin(req, res) {
   const user = await User.findOne({ email })
 
   if (!user || !(await user.isValidPassword(password))) {
-    return res.status(400).json({ error: { message: 'Invalid credentials' } })
+    return res.json({ error: { message: 'Invalid credentials' } })
   }
 
   // send a signed cookie with the token
