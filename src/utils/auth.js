@@ -7,15 +7,15 @@ const privateKey = 'gimly-privaaaaaaate'
 
 function newToken(id) {
   const idToJSON = JSON.parse(JSON.stringify(id))
-  return jwt.sign({ idToJSON }, privateKey, { expiresIn: '2h' })
+  return jwt.sign({ idToJSON }, privateKey, { expiresIn: '7d' })
 }
 
 function genCookieOpts() {
-  const afterThirtyDays = new Date(Date.now() + 30 * 24 * 60 * 60)
+  const afterSevenDays = new Date(Date.now() + 7 * 24 * 60 * 60)
 
   const cookieOptions = {
     httpOnly: true,
-    expires: afterThirtyDays,
+    expires: afterSevenDays,
     signed: true
   }
   return cookieOptions
