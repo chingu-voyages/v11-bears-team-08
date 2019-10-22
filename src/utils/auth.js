@@ -114,14 +114,8 @@ async function signin(req, res) {
 
   const userExists = await User.findOne({ email })
 
-  if (!userExists) {
-    return res.status(400).json({ message: 'Email not valid.' })
-  }
-
-  const validPassword = await userExists.isValidPassword(password)
-
-  if (!validPassword) {
-    return res.status(400).json({ message: 'Password not valid.' })
+  if (!userExists || !(await userExists.isValidPassword(password))) {
+    return res.status(400).json({ message: 'Invalid credentials' })
   }
 
   // send a signed cookie with the token
