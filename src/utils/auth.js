@@ -5,12 +5,12 @@ const User = require('../resources/components/user/user.model')
 // wrong!!!!!! should be assigned to an env var.
 const privateKey = 'gimly-privaaaaaaate'
 
-function newToken(id) {
+function signUserToken(id) {
   const idToJSON = JSON.parse(JSON.stringify(id))
   return jwt.sign({ idToJSON }, privateKey, { expiresIn: '7d' })
 }
 
-function genCookieOpts() {
+function getCookieOpts() {
   const afterSevenDays = new Date(Date.now() + 7 * 24 * 60 * 60)
 
   const cookieOptions = {
@@ -83,8 +83,8 @@ async function signup(req, res) {
     const user = await User.create({ email, password, type })
 
     // send a signed cookie with the token
-    const token = newToken(user._id)
-    return res.cookie('authToken', token, genCookieOpts()).json({ token })
+    const token = signUserToken(user._id)
+    return res.cookie('authToken', token, getCookieOpts()).json({ token })
   } catch (error) {
     if (error.name === 'MongoError' && error.code === 11000) {
       return res.status(400).json({
@@ -125,8 +125,8 @@ async function signin(req, res) {
   }
 
   // send a signed cookie with the token
-  const token = newToken(user._id)
-  return res.cookie('authToken', token, genCookieOpts()).json({ token })
+  const token = signUserToken(user._id)
+  return res.cookie('authToken', token, getCookieOpts()).json({ token })
 }
 
 module.exports = {
