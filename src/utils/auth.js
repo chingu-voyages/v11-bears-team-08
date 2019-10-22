@@ -51,7 +51,7 @@ async function getLoggedUser(req, res) {
 
   try {
     const { idToJSON: userId } = await jwt.verify(token, privateKey)
-    const user = await User.find({ _id: userId })
+    const user = await User.findOne({ _id: userId })
 
     if (!user) {
       return res.json({ message: 'No User Found' })
