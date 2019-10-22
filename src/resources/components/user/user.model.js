@@ -25,14 +25,12 @@ const userSchema = new mongoose.Schema(
       required: [true, 'Email is required.'],
       unique: true,
       trim: true,
-      select: false,
       validate: [validEmail, 'This email is not in an email format.']
     },
     password: {
       type: String,
       minlength: [8, 'Password requires to have 8 characters minimum.'],
-      required: [true, 'Password is required.'],
-      select: false
+      required: [true, 'Password is required.']
     },
     avatar: String,
     apointments: [String],

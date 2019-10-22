@@ -1,5 +1,6 @@
 const jwt = require('jsonwebtoken')
 const bcrypt = require('bcryptjs')
+const omit = require('lodash.omit')
 const User = require('../resources/components/user/user.model')
 
 // wrong!!!!!! should be assigned to an env var.
@@ -57,7 +58,7 @@ async function getLoggedUser(req, res) {
       return res.json({ message: 'No User Found' })
     }
 
-    return res.json({ user })
+    return res.json({ user: getSafeUser(user.toObject()) })
   } catch (error) {
     if (error.name === 'JsonWebTokenError') {
       return res.status(401).json({ error })
@@ -107,8 +108,6 @@ async function signin(req, res) {
   const password = req.body.password || ''
 
   const userExists = await User.findOne({ email: req.body.email })
-    .select('password')
-    .exec()
 
   if (!userExists) {
     return res.status(400).json({ message: 'Email not valid.' })
@@ -130,4 +129,8 @@ module.exports = {
   signin,
   getCachedToken,
   getLoggedUser
+}
+
+function getSafeUser(user) {
+  return omit(user, ['__v', '_id', 'password'])
 }
