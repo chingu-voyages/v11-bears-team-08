@@ -1,5 +1,7 @@
-import React, { useState } from 'react'
+import React, { useState, useContext } from 'react'
 import styled from '@emotion/styled'
+import { authApi } from '../../services/api'
+import { UserContext } from '../../App'
 
 const Container = styled.div`
   height: 100vh;
@@ -69,13 +71,18 @@ export default function() {
   const [password, setPassword] = useState('')
   const [email, setEmail] = useState('')
   const [error, setError] = useState('')
+  const [, setUser] = useContext(UserContext)
 
-  function handleOnSubmit(e) {
+  async function handleOnSubmit(e) {
     e.preventDefault()
 
-    // reset fields.
-    setPassword('')
-    setEmail('')
+    const { error, user } = await authApi.signup({ email, password })
+
+    if (error) {
+      return setError(error)
+    }
+
+    setUser(user)
   }
 
   return (
