@@ -1,4 +1,4 @@
-import React, { useState, createContext } from 'react'
+import React, { useState, useEffect, createContext } from 'react'
 import { BrowserRouter, Route, Redirect } from 'react-router-dom'
 import styled from '@emotion/styled'
 import Reset from './Reset'
@@ -7,6 +7,7 @@ import Landing from './pages/Landing'
 import Signup from './pages/Signup'
 import Signin from './pages/Signin'
 import Conversation from './pages/Conversation'
+import { authApi } from './services/api'
 
 const Container = styled.div`
   position: relative;
@@ -19,6 +20,16 @@ export const UserContext = createContext([null, () => {}])
 
 function App() {
   const [user, setUser] = useState(null)
+
+  useEffect(() => {
+    async function authWithCookie() {
+      const { user } = await authApi.getCachedUser()
+      setUser(user)
+    }
+
+    authWithCookie()
+  }, [])
+
   return (
     <Container>
       <Reset />
