@@ -108,8 +108,15 @@ const SignUpLink = styled.button`
 export default () => {
   const [email, setEmail] = useState('email...')
   const [password, setPassword] = useState('')
+  const [name, setName] = useState('Name')
+  const [nameErr, setNameErr] = useState(false)
   const [pwdErr, setPwdErr] = useState(false)
   const [emailErr, setEmailErr] = useState(false)
+
+  const validateNameTxt = (text) => (/[^a-zA-Z]/gi.test(text) ? 'error' : '')
+
+  const updateNameText = (value) =>
+    value === 'error' ? setNameErr(true) : setNameErr(false)
 
   const validateEmailText = (text) => {
     if (text.includes('@')) return
@@ -130,12 +137,18 @@ export default () => {
   }
 
   const handleChange = (e) => {
-    if (e.target.name === 'email') {
-      setEmail(e.target.value)
-      updateEmailText(validateEmailText(e.target.value))
+    const targetEventName = e.target.name
+    const targetEventValue = e.target.value
+
+    if (targetEventName === 'email') {
+      setEmail(targetEventValue)
+      updateEmailText(validateEmailText(targetEventValue))
+    } else if (targetEventName === 'password') {
+      setPassword(targetEventValue)
+      updatePwdText(validatePwdText(targetEventValue))
     } else {
-      setPassword(e.target.value)
-      updatePwdText(validatePwdText(e.target.value))
+      setName(targetEventValue)
+      updateNameText(validateNameTxt(targetEventValue))
     }
   }
   const handleSubmit = (e) => {
@@ -148,8 +161,22 @@ export default () => {
   return (
     <Container>
       <Form onSubmit={handleSubmit}>
-        <FormTitle>Register!</FormTitle>
+        <FormTitle>Register Today!</FormTitle>
         <InputContainer>
+          <Input
+            value={name}
+            type="text"
+            name="name"
+            onChange={handleChange}
+            error={nameErr}
+          />
+          <HelperTextWrapper>
+            {nameErr ? (
+              <HelperText error>Only Alphabetic Characters</HelperText>
+            ) : (
+              <HelperText>Helper Text</HelperText>
+            )}
+          </HelperTextWrapper>
           <Input
             value={email}
             type="email"
