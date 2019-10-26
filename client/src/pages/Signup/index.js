@@ -62,11 +62,27 @@ const RegisterButton = styled.button`
 `
 
 export default function Signup() {
+  const [firstName, setFirstName] = useState('')
+  const [lastName, setLastName] = useState('')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
+  const [fNameError, setFNameError] = useState('')
+  const [lNameError, setLNameError] = useState('')
   const [emailError, setEmailError] = useState('')
   const [passwordError, setPasswordError] = useState('')
   const [, setUser] = useContext(UserContext)
+
+  function validateFName(e) {
+    if (/[^a-zA-Z]/gi.test(e.target.value)) {
+      setFNameError('Invalid first name format')
+    }
+  }
+
+  function validateLName(e) {
+    if (/[^a-zA-Z]/gi.test(e.target.value)) {
+      setLNameError('Invalid last name format')
+    }
+  }
 
   function validateEmail(e) {
     if (!e.target.value.includes('@')) setEmailError('Invalid email format')
@@ -84,6 +100,8 @@ export default function Signup() {
     const { error, user } = await authApi.signup({ email, password })
 
     if (error) {
+      if (error.field === 'fName') return setFNameError(error.message)
+      if (error.field === 'lName') return setLNameError(error.message)
       if (error.field === 'email') return setEmailError(error.message)
       if (error.field === 'password') return setPasswordError(error.message)
     }
@@ -95,6 +113,28 @@ export default function Signup() {
     <Container>
       <Form onSubmit={handleSubmit}>
         <h2>Register Today!</h2>
+        <Input
+          onChange={(e) => setFirstName(e.target.value)}
+          value={firstName}
+          onBlur={validateFName}
+          onFocus={() => setFNameError('')}
+          type="text"
+          error={fNameError}
+          placeholder="First Name"
+        />
+        {fNameError && <InputError>{fNameError}</InputError>}
+
+        <Input
+          onChange={(e) => setLastName(e.target.value)}
+          value={lastName}
+          onBlur={validateLName}
+          onFocus={() => setLNameError('')}
+          type="text"
+          error={lNameError}
+          placeholder="Last Name"
+        />
+        {lNameError && <InputError>{lNameError}</InputError>}
+
         <Input
           onChange={(e) => setEmail(e.target.value)}
           value={email}
