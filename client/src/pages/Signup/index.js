@@ -1,85 +1,91 @@
 import React, { useState, useContext } from 'react'
+import { Link } from 'react-router-dom'
 import styled from '@emotion/styled'
 import { authApi } from '../../services/api'
 import { UserContext } from '../../App'
 
-const Container = styled.div`
+import registerImg from '../../assets/img/register.jpg'
+
+const Container = styled.main`
+  display: grid;
+  grid-template-columns: 2fr 4fr;
+`
+
+const Picture = styled.div`
   height: 100vh;
-  background-color: #edf2f7;
-  padding-top: 200px;
-  background-image: linear-gradient(
-      to right bottom,
-      #2196f3,
-      rgba(244, 67, 54, 0.9)
-    ),
-    url('https://images.unsplash.com/photo-1534438327276-14e5300c3a48?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1350&q=80');
+  background-image: url(${registerImg});
   background-size: cover;
-  background-position: top;
+  background-position: center;
 `
 
 const Form = styled.form`
-  display: block;
-  margin: 0 auto;
-  padding: 2rem;
-  width: 320px;
-  background-color: #fff;
-  border-radius: 0.25rem;
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1),
-    0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  display: grid;
+  place-self: center;
+  width: 400px;
+  text-align: center;
 `
 
 const Input = styled.input`
-  width: 100%;
-  padding: 0.6rem 0.5rem;
-  margin: 0.5rem 0 1rem 0;
-  border: 1px solid #e2e8f0;
-  font-size: 1rem;
-  color: #4a5568;
-  border-radius: 0.25rem;
-  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
-  z-index: 9999;
-
-  &::placeholder {
-    color: #ccd2db;
-  }
+  margin: 1em 10%;
+  padding: 1em 1.2em;
+  border: 1px lightgray solid;
+  border-radius: 10px;
+  background: #f5f6f7;
+  font-size: 0.9rem;
+  outline: none;
+  transition: 0.2s ease-in-out;
+  ${({ error }) => error && 'border-left: 10px red solid;'}
 `
 
-const Button = styled.button`
-  display: block;
-  padding: 0.8rem 1rem;
-  border-radius: 0.25rem;
+const InputError = styled.p`
+  margin: 0 calc(10% + 10px);
+  margin-top: -1em;
+  color: red;
+  font-size: 0.8rem;
+  text-align: left;
+  letter-spacing: 1px;
+`
+
+const RegisterButton = styled.button`
+  margin: 1em 10%;
+  padding: 1em 1.2em;
+  border-radius: 25px;
+  background: #4933ef;
+  color: white;
   font-size: 1rem;
-  font-weight: bold;
-  background-color: #f44336;
-  color: #fff;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  outline: none;
   cursor: pointer;
+  box-shadow: 0 3px 5px -1px rgba(0, 0, 0, 0.2),
+    0 6px 10px 0 rgba(0, 0, 0, 0.14), 0 1px 18px 0 rgba(0, 0, 0, 0.12);
 `
 
-const Label = styled.label`
-  color: #4a5568;
-  font-size: 0.875rem;
-  font-weight: bold;
-`
-
-const Error = styled.p`
-  color: #f56565;
-  font-size: 0.875rem;
-  font-style: italic;
-`
-
-export default function() {
-  const [password, setPassword] = useState('')
+export default function Signup() {
   const [email, setEmail] = useState('')
-  const [error, setError] = useState('')
+  const [password, setPassword] = useState('')
+  const [emailError, setEmailError] = useState('')
+  const [passwordError, setPasswordError] = useState('')
   const [, setUser] = useContext(UserContext)
 
-  async function handleOnSubmit(e) {
+  function validateEmail(e) {
+    if (!e.target.value.includes('@')) setEmailError('Invalid email format')
+  }
+
+  function validatePassword(e) {
+    if (e.target.value.length < 8) {
+      setPasswordError('Password must be more than 8 characters')
+    }
+  }
+
+  async function handleSubmit(e) {
     e.preventDefault()
 
     const { error, user } = await authApi.signup({ email, password })
 
     if (error) {
-      return setError(error)
+      if (error.field === 'email') return setEmailError(error.message)
+      if (error.field === 'password') return setPasswordError(error.message)
     }
 
     setUser(user)
@@ -87,26 +93,38 @@ export default function() {
 
   return (
     <Container>
-      <Form onSubmit={handleOnSubmit}>
-        <Label>Email</Label>
+      <Form onSubmit={handleSubmit}>
+        <h2>Register Today!</h2>
         <Input
-          value={email}
-          type="text"
-          name="email"
-          placeholder="Email"
           onChange={(e) => setEmail(e.target.value)}
+          value={email}
+          onBlur={validateEmail}
+          onFocus={() => setEmailError('')}
+          type="email"
+          placeholder="Email"
+          error={emailError}
         />
-        <Label>Password</Label>
+        {emailError && <InputError>{emailError}</InputError>}
+
         <Input
-          value={password}
-          type="password"
-          name="password"
-          placeholder="Password"
           onChange={(e) => setPassword(e.target.value)}
+          value={password}
+          onBlur={validatePassword}
+          onFocus={() => setPasswordError('')}
+          type="password"
+          placeholder="password"
+          error={passwordError}
         />
-        {error ? <Error>{error}</Error> : ''}
-        <Button type="submit">Sign Up</Button>
+        {passwordError && <InputError>{passwordError}</InputError>}
+
+        <RegisterButton>Register</RegisterButton>
+
+        <p>
+          Already have an account? <Link to="/login">Sign In</Link>
+        </p>
       </Form>
+
+      <Picture />
     </Container>
   )
 }
