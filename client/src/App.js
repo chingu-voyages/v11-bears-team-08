@@ -1,5 +1,5 @@
 import React, { useState, createContext } from 'react'
-import { BrowserRouter, Route } from 'react-router-dom'
+import { BrowserRouter, Route, Redirect } from 'react-router-dom'
 import styled from '@emotion/styled'
 import Reset from './Reset'
 import Global from './Global'
@@ -32,8 +32,10 @@ function App() {
             <Conversation />
           </Route>
 
-          <Route path="/login" component={Signin} />
-          <Route path="/register" component={Signup} />
+          <Route path="/login">{user ? <Redirect to="/" /> : <Signin />}</Route>
+          <Route path="/register">
+            {user ? <Redirect to="/" /> : <Signup />}
+          </Route>
         </UserContext.Provider>
       </BrowserRouter>
     </Container>
