@@ -20,7 +20,7 @@ const App = () => (
     <Reset />
     <Global />
     {/* <Nav /> */}
-    <Signin />
+    <Signup />
   </Container>
 )
 
