@@ -57,23 +57,40 @@ const LoginButton = styled.button`
   cursor: pointer;
   box-shadow: 0 3px 5px -1px rgba(0, 0, 0, 0.2),
     0 6px 10px 0 rgba(0, 0, 0, 0.14), 0 1px 18px 0 rgba(0, 0, 0, 0.12);
+
+  &:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+  }
 `
 
 export default function Signin() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [error, setError] = useState('')
+  const [loading, setLoading] = useState(false)
   const [, setUser] = useContext(UserContext)
+
+  // this enables submitting the form only when eligible
+  const isFilled = Boolean(email && password)
+  const isValid = !error
 
   async function handleSubmit(e) {
     e.preventDefault()
 
+    if (loading || !isFilled || !isValid) {
+      return
+    }
+
+    setLoading(true)
     const { error, user } = await authApi.signin({ email, password })
 
     if (error) {
+      setLoading(false)
       return setError(error.message)
     }
 
+    setLoading(false)
     setUser(user)
   }
 
@@ -84,19 +101,27 @@ export default function Signin() {
         {error && <LoginError>{error}</LoginError>}
 
         <Input
+          onChange={(e) => {
+            if (error) setError('')
+            setEmail(e.target.value)
+          }}
           value={email}
-          onChange={(e) => setEmail(e.target.value)}
           type="email"
           placeholder="Your email"
         />
         <Input
+          onChange={(e) => {
+            if (error) setError('')
+            setPassword(e.target.value)
+          }}
           value={password}
-          onChange={(e) => setPassword(e.target.value)}
           type="password"
           placeholder="Your password"
         />
 
-        <LoginButton>Sign In</LoginButton>
+        <LoginButton disabled={loading || !isFilled || !isValid}>
+          Sign In
+        </LoginButton>
 
         <p>
           If you don't have an account, <Link to="/register">sign up</Link>

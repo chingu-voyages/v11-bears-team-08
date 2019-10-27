@@ -59,6 +59,11 @@ const RegisterButton = styled.button`
   cursor: pointer;
   box-shadow: 0 3px 5px -1px rgba(0, 0, 0, 0.2),
     0 6px 10px 0 rgba(0, 0, 0, 0.14), 0 1px 18px 0 rgba(0, 0, 0, 0.12);
+
+  &:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+  }
 `
 
 export default function Signup() {
@@ -70,7 +75,36 @@ export default function Signup() {
   const [lNameError, setLNameError] = useState('')
   const [emailError, setEmailError] = useState('')
   const [passwordError, setPasswordError] = useState('')
+  const [loading, setLoading] = useState(false)
   const [, setUser] = useContext(UserContext)
+
+  // this enables submitting the form only when eligible
+  const isFilled = Boolean(firstName && lastName && email && password)
+  const isValid = !Boolean(
+    fNameError || lNameError || emailError || passwordError
+  )
+
+  async function handleSubmit(e) {
+    e.preventDefault()
+
+    if (loading || !isFilled || !isValid) {
+      return
+    }
+
+    setLoading(true)
+    const { error, user } = await authApi.signup({ email, password })
+
+    if (error) {
+      setLoading(false)
+      if (error.field === 'fName') return setFNameError(error.message)
+      if (error.field === 'lName') return setLNameError(error.message)
+      if (error.field === 'email') return setEmailError(error.message)
+      if (error.field === 'password') return setPasswordError(error.message)
+    }
+
+    setLoading(false)
+    setUser(user)
+  }
 
   function validateFName(e) {
     if (/[^a-zA-Z]/gi.test(e.target.value)) {
@@ -92,21 +126,6 @@ export default function Signup() {
     if (e.target.value.length < 8) {
       setPasswordError('Password must be more than 8 characters')
     }
-  }
-
-  async function handleSubmit(e) {
-    e.preventDefault()
-
-    const { error, user } = await authApi.signup({ email, password })
-
-    if (error) {
-      if (error.field === 'fName') return setFNameError(error.message)
-      if (error.field === 'lName') return setLNameError(error.message)
-      if (error.field === 'email') return setEmailError(error.message)
-      if (error.field === 'password') return setPasswordError(error.message)
-    }
-
-    setUser(user)
   }
 
   return (
@@ -157,7 +176,9 @@ export default function Signup() {
         />
         {passwordError && <InputError>{passwordError}</InputError>}
 
-        <RegisterButton>Register</RegisterButton>
+        <RegisterButton disabled={loading || !isFilled || !isValid}>
+          Register
+        </RegisterButton>
 
         <p>
           Already have an account? <Link to="/login">Sign In</Link>
