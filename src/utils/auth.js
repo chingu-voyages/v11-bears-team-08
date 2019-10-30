@@ -6,7 +6,7 @@ const privateKey = process.env.JWT_SECRET || 'gimly-privaaaaaaate'
 // configures all auth routes, effectively making this file a module
 module.exports = function setupAuthRoutes(router) {
   router.get('/getLoggedUser', getLoggedUser)
-  router.post('/getCachedToken', getCachedToken)
+  router.get('/getCachedToken', getCachedToken)
   router.post('/signin', signin)
   router.post('/signup', signup)
 }

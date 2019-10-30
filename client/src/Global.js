@@ -13,18 +13,18 @@ export default () => (
         box-sizing: border-box;
       }
 
-      ::-webkit-input-placeholder {
-        color: white;
-      }
-      ::-moz-placeholder {
-        color: white;
-      }
-      :-ms-input-placeholder {
-        color: white;
-      }
-      :-moz-placeholder {
-        color: white;
-      }
+      // ::-webkit-input-placeholder {
+      //   color: white;
+      // }
+      // ::-moz-placeholder {
+      //   color: white;
+      // }
+      // :-ms-input-placeholder {
+      //   color: white;
+      // }
+      // :-moz-placeholder {
+      //   color: white;
+      // }
 
       body {
         font-family: 'Poppins', 'Helvetica', 'Arial', sans-serif;
