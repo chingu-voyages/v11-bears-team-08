@@ -64,4 +64,16 @@ const authApi = {
   }
 }
 
-export { initApi, authApi }
+// collection of trainer methods
+const trainerApi = {
+  async getCities({ text }) {
+    const { data } = await api.get(`/places?text=${text}`)
+    return data
+  },
+  async getTrainersByCity({ id }) {
+    const { data } = await api.get(`/trainers?city_id=${id}`)
+    return data
+  }
+}
+
+export { initApi, authApi, trainerApi }
