@@ -66,7 +66,8 @@ const authApi = {
 
 // collection of trainer methods
 const trainerApi = {
-  async getCities({ text }) {
+  async getCities(text) {
+    initApi()
     const { data } = await api.get(`/places?text=${text}`)
     return data
   },
