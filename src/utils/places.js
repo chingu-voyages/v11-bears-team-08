@@ -14,18 +14,24 @@ async function getCities(req, res) {
   const apiParams = {
     query: text,
     type: 'city',
-    language: 'en'
+    language: 'en',
+    aroundLatLngViaIP: false
   }
 
   try {
     // for the resulting object, see https://community.algolia.com/places/api-clients.html#json-answer
     const apiResult = await places.search(apiParams)
     const cities = apiResult.hits
-      .filter(({ is_city, is_suburb }) => is_city && !is_suburb)
-      .map(({ objectID, country, locale_names }) => ({
+      .filter(
+        ({ is_city, is_suburb, objectID }) => is_city && !is_suburb && objectID
+      )
+      .map(({ objectID, country, county, locale_names, administrative }) => ({
         id: objectID,
         name: locale_names[0],
-        country
+        country,
+        administrative: administrative[0],
+        // For some big cities, county property is not available. e.g Berlin
+        county: county && county[0]
       }))
 
     return res.json({ cities })
