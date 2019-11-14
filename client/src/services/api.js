@@ -67,8 +67,9 @@ const authApi = {
 // collection of trainer methods
 const trainerApi = {
   async getCities(text) {
-    await initApi()
-    return await api.get(`/places?text=${text}`)
+    initApi()
+    const { data } = await api.get(`/places?text=${text}`)
+    return data.cities
   },
   async getTrainersByCity({ id }) {
     const { data } = await api.get(`/trainers?city_id=${id}`)
