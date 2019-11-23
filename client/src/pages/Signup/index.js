@@ -46,11 +46,11 @@ const InputError = styled.p`
   letter-spacing: 1px;
 `
 
-const RegisterButton = styled.button`
+const Button = styled.button`
   margin: 1em 10%;
   padding: 1em 1.2em;
   border-radius: 25px;
-  background: #4933ef;
+  background: ${(props) => (props.trainer ? '#3BAE31' : '#4933EF')};
   color: white;
   font-size: 1rem;
   letter-spacing: 2px;
@@ -67,6 +67,9 @@ const RegisterButton = styled.button`
 `
 
 export default function Signup() {
+  const [, setUser] = useContext(UserContext)
+
+  // user state
   const [firstName, setFirstName] = useState('')
   const [lastName, setLastName] = useState('')
   const [email, setEmail] = useState('')
@@ -75,19 +78,18 @@ export default function Signup() {
   const [lNameError, setLNameError] = useState('')
   const [emailError, setEmailError] = useState('')
   const [passwordError, setPasswordError] = useState('')
-  const [loading, setLoading] = useState(false)
-  const [, setUser] = useContext(UserContext)
 
-  // this enables submitting the form only when eligible
-  const isFilled = Boolean(firstName && lastName && email && password)
-  const isValid = !Boolean(
+  // enables submitting the form only when eligible
+  const [isLoading, setLoading] = useState(false)
+  const isUserReady = Boolean(firstName && lastName && email && password)
+  const isUserInputValid = !Boolean(
     fNameError || lNameError || emailError || passwordError
   )
 
   async function handleSubmit(e) {
     e.preventDefault()
 
-    if (loading || !isFilled || !isValid) {
+    if (isLoading || !isUserReady || !isUserInputValid) {
       return
     }
 
@@ -106,80 +108,28 @@ export default function Signup() {
     setUser(user)
   }
 
-  function validateFName(e) {
-    if (/[^a-zA-Z]/gi.test(e.target.value)) {
-      setFNameError('Invalid first name format')
-    }
-  }
-
-  function validateLName(e) {
-    if (/[^a-zA-Z]/gi.test(e.target.value)) {
-      setLNameError('Invalid last name format')
-    }
-  }
-
-  function validateEmail(e) {
-    if (!e.target.value.includes('@')) setEmailError('Invalid email format')
-  }
-
-  function validatePassword(e) {
-    if (e.target.value.length < 8) {
-      setPasswordError('Password must be more than 8 characters')
-    }
+  // categorize props for more readability
+  const buttonsProps = { isLoading, isUserReady, isUserInputValid }
+  const userProps = { firstName, lastName, email, password }
+  const setUserProps = { setFirstName, setLastName, setEmail, setPassword }
+  const userErrorsProps = { fNameError, lNameError, emailError, passwordError }
+  const setUserErrorsProps = {
+    setFNameError,
+    setLNameError,
+    setEmailError,
+    setPasswordError
   }
 
   return (
     <Container>
       <Form onSubmit={handleSubmit}>
-        <h2>Register Today!</h2>
-        <Input
-          onChange={(e) => setFirstName(e.target.value)}
-          value={firstName}
-          onBlur={validateFName}
-          onFocus={() => setFNameError('')}
-          type="text"
-          error={fNameError}
-          placeholder="First Name"
+        <UserFields
+          userProps={userProps}
+          setUserProps={setUserProps}
+          errorsProps={userErrorsProps}
+          setErrorsProps={setUserErrorsProps}
+          buttonsProps={buttonsProps}
         />
-        {fNameError && <InputError>{fNameError}</InputError>}
-
-        <Input
-          onChange={(e) => setLastName(e.target.value)}
-          value={lastName}
-          onBlur={validateLName}
-          onFocus={() => setLNameError('')}
-          type="text"
-          error={lNameError}
-          placeholder="Last Name"
-        />
-        {lNameError && <InputError>{lNameError}</InputError>}
-
-        <Input
-          onChange={(e) => setEmail(e.target.value)}
-          value={email}
-          onBlur={validateEmail}
-          onFocus={() => setEmailError('')}
-          type="email"
-          placeholder="Email"
-          error={emailError}
-        />
-        {emailError && <InputError>{emailError}</InputError>}
-
-        <Input
-          onChange={(e) => setPassword(e.target.value)}
-          value={password}
-          onBlur={validatePassword}
-          onFocus={() => setPasswordError('')}
-          type="password"
-          placeholder="password"
-          error={passwordError}
-        />
-        {passwordError && <InputError>{passwordError}</InputError>}
-
-        <RegisterButton disabled={loading || !isFilled || !isValid}>
-          Register
-        </RegisterButton>
-
         <p>
           Already have an account? <Link to="/login">Sign In</Link>
         </p>
@@ -188,4 +138,103 @@ export default function Signup() {
       <Picture />
     </Container>
   )
+}
+
+function UserFields({
+  userProps,
+  setUserProps,
+  errorsProps,
+  setErrorsProps,
+  buttonsProps
+}) {
+  return (
+    <>
+      <h2>Register Today!</h2>
+      <Input
+        type="text"
+        placeholder="First Name"
+        value={userProps.firstName}
+        onChange={(e) => setUserProps.setFirstName(e.target.value)}
+        error={errorsProps.fNameError}
+        onFocus={() => setErrorsProps.setFNameError('')}
+        onBlur={validateFName}
+      />
+      {errorsProps.fNameError && (
+        <InputError>{errorsProps.fNameError}</InputError>
+      )}
+
+      <Input
+        type="text"
+        placeholder="Last Name"
+        value={userProps.lastName}
+        onChange={(e) => setUserProps.setLastName(e.target.value)}
+        error={errorsProps.lNameError}
+        onFocus={() => setErrorsProps.setLNameError('')}
+        onBlur={validateLName}
+      />
+      {errorsProps.lNameError && (
+        <InputError>{errorsProps.lNameError}</InputError>
+      )}
+
+      <Input
+        type="email"
+        placeholder="Email"
+        value={userProps.email}
+        onChange={(e) => setUserProps.setEmail(e.target.value)}
+        error={errorsProps.emailError}
+        onFocus={() => setErrorsProps.setEmailError('')}
+        onBlur={validateEmail}
+      />
+      {errorsProps.emailError && (
+        <InputError>{errorsProps.emailError}</InputError>
+      )}
+
+      <Input
+        type="password"
+        placeholder="password"
+        value={userProps.password}
+        onChange={(e) => setUserProps.setPassword(e.target.value)}
+        error={errorsProps.passwordError}
+        onFocus={() => setErrorsProps.setPasswordError('')}
+        onBlur={validatePassword}
+      />
+      {errorsProps.passwordError && (
+        <InputError>{errorsProps.passwordError}</InputError>
+      )}
+
+      <Button
+        disabled={
+          buttonsProps.isLoading ||
+          !buttonsProps.isUserReady ||
+          !buttonsProps.isUserInputValid
+        }
+      >
+        Register as a User
+      </Button>
+    </>
+  )
+
+  function validateFName(e) {
+    if (/[^a-zA-Z]/gi.test(e.target.value)) {
+      setErrorsProps.setFNameError('Invalid first name format')
+    }
+  }
+
+  function validateLName(e) {
+    if (/[^a-zA-Z]/gi.test(e.target.value)) {
+      setErrorsProps.setLNameError('Invalid last name format')
+    }
+  }
+
+  function validateEmail(e) {
+    if (!e.target.value.includes('@')) {
+      setErrorsProps.setEmailError('Invalid email format')
+    }
+  }
+
+  function validatePassword(e) {
+    if (e.target.value.length < 8) {
+      setErrorsProps.setPasswordError('Password must be more than 8 characters')
+    }
+  }
 }
