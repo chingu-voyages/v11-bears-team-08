@@ -2,6 +2,7 @@ const jwt = require('jsonwebtoken')
 const omit = require('lodash.omit')
 const User = require('../resources/components/user/user.model')
 const Client = require('../resources/components/client/client.model')
+const Trainer = require('../resources/components/trainer/trainer.model')
 const privateKey = process.env.JWT_SECRET || 'gimly-privaaaaaaate'
 
 // configures all auth routes, effectively making this file a module
@@ -78,8 +79,17 @@ async function signin(req, res) {
 
 async function signup(req, res) {
   const { type, firstName, lastName, email, password } = req.body
+  const { speciality, city } = req.body
+  const { description, experience } = req.body
 
   if (!type || !firstName || !lastName || !email || !password) {
+    return res.status(400).send()
+  }
+
+  if (
+    type === 'trainer' &&
+    !(speciality && city && city.id && city.name && city.country)
+  ) {
     return res.status(400).send()
   }
 
@@ -88,7 +98,16 @@ async function signup(req, res) {
   }
 
   try {
-    const user = new Client({ firstName, lastName, email, password })
+    const userFields = { firstName, lastName, email, password }
+    const trainerFields = { description, experience, speciality, city }
+
+    let user
+    if (type === 'client') {
+      user = new Client(userFields)
+    } else if (type === 'trainer') {
+      user = new Trainer({ ...userFields, ...trainerFields })
+    }
+
     await user.save()
 
     // send a signed cookie with the token
@@ -116,7 +135,15 @@ async function signup(req, res) {
 
 /****** Utilities ******/
 function getSafeUser(user) {
-  return omit(user, ['__v', '_id', 'password'])
+  return omit(user, [
+    '__v',
+    '_id',
+    'password',
+    'description',
+    'experience',
+    'speciality',
+    'city'
+  ])
 }
 
 function signUserToken(id) {
