@@ -25,27 +25,6 @@ const Form = styled.form`
   text-align: center;
 `
 
-const Input = styled.input`
-  margin: 1em 10%;
-  padding: 1em 1.2em;
-  border: 1px lightgray solid;
-  border-radius: 10px;
-  background: #f5f6f7;
-  font-size: 0.9rem;
-  outline: none;
-  transition: 0.2s ease-in-out;
-  ${({ error }) => error && 'border-left: 10px red solid;'}
-`
-
-const InputError = styled.p`
-  margin: 0 calc(10% + 10px);
-  margin-top: -1em;
-  color: red;
-  font-size: 0.8rem;
-  text-align: left;
-  letter-spacing: 1px;
-`
-
 const Button = styled.button`
   margin: 1em 10%;
   padding: 1em 1.2em;
@@ -79,12 +58,30 @@ export default function Signup() {
   const [emailError, setEmailError] = useState('')
   const [passwordError, setPasswordError] = useState('')
 
+  // trainer state
+  const [description, setDescription] = useState('')
+  const [experience, setExperience] = useState('')
+  const [speciality, setSpeciality] = useState('')
+  const [city, setCity] = useState({ id: null, name: null, country: null })
+  const [descriptionError, setDescriptionError] = useState('')
+  const [experienceError, setExperienceError] = useState('')
+  const [specialityError, setSpecialityError] = useState('')
+  const [cityError, setCityError] = useState('')
+
   // enables submitting the form only when eligible
   const [isLoading, setLoading] = useState(false)
   const isUserReady = Boolean(firstName && lastName && email && password)
   const isUserInputValid = !Boolean(
     fNameError || lNameError || emailError || passwordError
   )
+  const isTrainerReady =
+    isUserReady &&
+    Boolean(description && experience && speciality && city.id && city.name)
+  const isTrainerInputValid =
+    isUserInputValid &&
+    !Boolean(
+      descriptionError || experienceError || specialityError || cityError
+    )
 
   async function handleSubmit(e) {
     e.preventDefault()
@@ -109,7 +106,7 @@ export default function Signup() {
   }
 
   // categorize props for more readability
-  const buttonsProps = { isLoading, isUserReady, isUserInputValid }
+  const userButtonsProps = { isLoading, isUserReady, isUserInputValid }
   const userProps = { firstName, lastName, email, password }
   const setUserProps = { setFirstName, setLastName, setEmail, setPassword }
   const userErrorsProps = { fNameError, lNameError, emailError, passwordError }
@@ -120,16 +117,45 @@ export default function Signup() {
     setPasswordError
   }
 
+  const trainerButtonsProps = { isLoading, isTrainerReady, isTrainerInputValid }
+  const trainerProps = { description, experience, speciality, city }
+  const setTrainerProps = {
+    setDescription,
+    setExperience,
+    setSpeciality,
+    setCity
+  }
+  const trainerErrorsProps = {
+    descriptionError,
+    experienceError,
+    specialityError,
+    cityError
+  }
+  const setTrainerErrorsProps = {
+    setDescriptionError,
+    setExperienceError,
+    setSpecialityError,
+    setCityError
+  }
+
   return (
     <Container>
       <Form onSubmit={handleSubmit}>
-        <UserFields
+        <TrainerFields
+          trainerProps={trainerProps}
+          setTrainerProps={setTrainerProps}
+          errorsProps={trainerErrorsProps}
+          setErrorsProps={setTrainerErrorsProps}
+          buttonsProps={trainerButtonsProps}
+        />
+
+        {/* <UserFields
           userProps={userProps}
           setUserProps={setUserProps}
           errorsProps={userErrorsProps}
           setErrorsProps={setUserErrorsProps}
-          buttonsProps={buttonsProps}
-        />
+          buttonsProps={userButtonsProps}
+        /> */}
         <p>
           Already have an account? <Link to="/login">Sign In</Link>
         </p>
@@ -139,6 +165,27 @@ export default function Signup() {
     </Container>
   )
 }
+
+const Input = styled.input`
+  margin: 1em 10%;
+  padding: 1em 1.2em;
+  border: 1px lightgray solid;
+  border-radius: 10px;
+  background: #f5f6f7;
+  font-size: 0.9rem;
+  outline: none;
+  transition: 0.2s ease-in-out;
+  ${({ error }) => error && 'border-left: 10px red solid;'}
+`
+
+const ErrorText = styled.p`
+  margin: 0 calc(10% + 10px);
+  margin-top: -1em;
+  color: red;
+  font-size: 0.8rem;
+  text-align: left;
+  letter-spacing: 1px;
+`
 
 function UserFields({
   userProps,
@@ -160,7 +207,7 @@ function UserFields({
         onBlur={validateFName}
       />
       {errorsProps.fNameError && (
-        <InputError>{errorsProps.fNameError}</InputError>
+        <ErrorText>{errorsProps.fNameError}</ErrorText>
       )}
 
       <Input
@@ -173,7 +220,7 @@ function UserFields({
         onBlur={validateLName}
       />
       {errorsProps.lNameError && (
-        <InputError>{errorsProps.lNameError}</InputError>
+        <ErrorText>{errorsProps.lNameError}</ErrorText>
       )}
 
       <Input
@@ -186,7 +233,7 @@ function UserFields({
         onBlur={validateEmail}
       />
       {errorsProps.emailError && (
-        <InputError>{errorsProps.emailError}</InputError>
+        <ErrorText>{errorsProps.emailError}</ErrorText>
       )}
 
       <Input
@@ -199,7 +246,7 @@ function UserFields({
         onBlur={validatePassword}
       />
       {errorsProps.passwordError && (
-        <InputError>{errorsProps.passwordError}</InputError>
+        <ErrorText>{errorsProps.passwordError}</ErrorText>
       )}
 
       <Button
@@ -235,6 +282,134 @@ function UserFields({
   function validatePassword(e) {
     if (e.target.value.length < 8) {
       setErrorsProps.setPasswordError('Password must be more than 8 characters')
+    }
+  }
+}
+
+const TextArea = styled.textarea`
+  margin: 1em 10%;
+  padding: 1em 1.2em;
+  border: 1px lightgray solid;
+  border-radius: 10px;
+  background: #f5f6f7;
+  font-family: 'Poppins', 'Helvetica', 'Arial', sans-serif;
+  font-size: 0.9rem;
+  outline: none;
+  resize: vertical;
+  transition: 0.2s ease-in-out;
+  ${({ error }) => error && 'border-left: 10px red solid;'}
+`
+
+function TrainerFields({
+  trainerProps,
+  setTrainerProps,
+  errorsProps,
+  setErrorsProps,
+  buttonsProps
+}) {
+  // cityInput will be used to request a city by name using algolia, then
+  // update the parent's city variable with an object containing its data
+  const [cityInput, setCityInput] = useState(trainerProps.city.name || '')
+
+  return (
+    <>
+      <h2>Complete your trainer info</h2>
+      <TextArea
+        placeholder="Description / Relevant Skills..."
+        value={trainerProps.description}
+        onChange={(e) => setTrainerProps.setDescription(e.target.value)}
+        error={errorsProps.descriptionError}
+        onFocus={() => setErrorsProps.setDescriptionError('')}
+        onBlur={validateDescription}
+      />
+      {errorsProps.descriptionError && (
+        <ErrorText>{errorsProps.descriptionError}</ErrorText>
+      )}
+
+      <TextArea
+        placeholder="Professional Experience..."
+        value={trainerProps.experience}
+        onChange={(e) => setTrainerProps.setExperience(e.target.value)}
+        error={errorsProps.experienceError}
+        onFocus={() => setErrorsProps.setExperienceError('')}
+        onBlur={validateExperience}
+      />
+      {errorsProps.experienceError && (
+        <ErrorText>{errorsProps.experienceError}</ErrorText>
+      )}
+
+      <Input
+        type="text"
+        placeholder="Training type / Speciality"
+        value={trainerProps.speciality}
+        onChange={(e) => setTrainerProps.setSpeciality(e.target.value)}
+        error={errorsProps.specialityError}
+        onFocus={() => setErrorsProps.setSpecialityError('')}
+        onBlur={validateSpeciality}
+      />
+      {errorsProps.specialityError && (
+        <ErrorText>{errorsProps.specialityError}</ErrorText>
+      )}
+
+      <Input
+        type="search"
+        placeholder="City"
+        value={cityInput}
+        onChange={(e) => setCityInput(e.target.value)}
+        error={errorsProps.cityError}
+        onFocus={() => setErrorsProps.setCityError('')}
+        onBlur={validateCity}
+      />
+      {errorsProps.cityError && <ErrorText>{errorsProps.cityError}</ErrorText>}
+
+      <Button
+        trainer
+        disabled={
+          buttonsProps.isLoading ||
+          !buttonsProps.isTrainerReady ||
+          !buttonsProps.isTrainerInputValid
+        }
+      >
+        Register as a Trainer
+      </Button>
+    </>
+  )
+
+  function validateDescription() {
+    const { description } = trainerProps
+    if (description.length > 500) {
+      setErrorsProps.setDescriptionError(
+        'description paragraph must be less than 500 characters'
+      )
+    }
+  }
+
+  function validateExperience() {
+    const { experience } = trainerProps
+    if (experience.length > 500) {
+      setErrorsProps.setExperienceError(
+        'professional experience paragraph must be less than 500 characters'
+      )
+    }
+  }
+
+  function validateSpeciality() {
+    const { speciality } = trainerProps
+    if (speciality.length < 4) {
+      setErrorsProps.setSpecialityError(
+        'speciality must be more than 4 characters'
+      )
+    }
+  }
+
+  // validates the object that we derive from algolia's suggestions
+  // must have and id and a name
+  function validateCity() {
+    const { city } = trainerProps
+    if (typeof city !== 'object' || !city.id || !city.name || !city.country) {
+      setErrorsProps.setCityError(
+        'invalid city selected, please choose from one of the suggestions'
+      )
     }
   }
 }
