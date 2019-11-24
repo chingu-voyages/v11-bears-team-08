@@ -68,6 +68,9 @@ export default function Signup() {
   const [specialityError, setSpecialityError] = useState('')
   const [cityError, setCityError] = useState('')
 
+  // controls which form fields appear, and which signup to trigger on submit
+  const [isTrainerSignup, setIsTrainerSignup] = useState(false)
+
   // enables submitting the form only when eligible
   const [isLoading, setLoading] = useState(false)
   const isUserReady = Boolean(firstName && lastName && email && password)
@@ -141,21 +144,26 @@ export default function Signup() {
   return (
     <Container>
       <Form onSubmit={handleSubmit}>
-        <TrainerFields
-          trainerProps={trainerProps}
-          setTrainerProps={setTrainerProps}
-          errorsProps={trainerErrorsProps}
-          setErrorsProps={setTrainerErrorsProps}
-          buttonsProps={trainerButtonsProps}
-        />
+        {isTrainerSignup ? (
+          <TrainerFields
+            trainerProps={trainerProps}
+            setTrainerProps={setTrainerProps}
+            errorsProps={trainerErrorsProps}
+            setErrorsProps={setTrainerErrorsProps}
+            buttonsProps={trainerButtonsProps}
+            setIsTrainerSignup={setIsTrainerSignup}
+          />
+        ) : (
+          <UserFields
+            userProps={userProps}
+            setUserProps={setUserProps}
+            errorsProps={userErrorsProps}
+            setErrorsProps={setUserErrorsProps}
+            buttonsProps={userButtonsProps}
+            setIsTrainerSignup={setIsTrainerSignup}
+          />
+        )}
 
-        {/* <UserFields
-          userProps={userProps}
-          setUserProps={setUserProps}
-          errorsProps={userErrorsProps}
-          setErrorsProps={setUserErrorsProps}
-          buttonsProps={userButtonsProps}
-        /> */}
         <p>
           Already have an account? <Link to="/login">Sign In</Link>
         </p>
@@ -192,7 +200,8 @@ function UserFields({
   setUserProps,
   errorsProps,
   setErrorsProps,
-  buttonsProps
+  buttonsProps,
+  setIsTrainerSignup
 }) {
   return (
     <>
@@ -250,6 +259,19 @@ function UserFields({
       )}
 
       <Button
+        type="button"
+        trainer
+        disabled={
+          buttonsProps.isLoading ||
+          !buttonsProps.isUserReady ||
+          !buttonsProps.isUserInputValid
+        }
+        onClick={() => setIsTrainerSignup(true)}
+      >
+        Become a Trainer
+      </Button>
+
+      <Button
         disabled={
           buttonsProps.isLoading ||
           !buttonsProps.isUserReady ||
@@ -300,12 +322,14 @@ const TextArea = styled.textarea`
   ${({ error }) => error && 'border-left: 10px red solid;'}
 `
 
+// TODO: call algolia and grab the city id + name
 function TrainerFields({
   trainerProps,
   setTrainerProps,
   errorsProps,
   setErrorsProps,
-  buttonsProps
+  buttonsProps,
+  setIsTrainerSignup
 }) {
   // cityInput will be used to request a city by name using algolia, then
   // update the parent's city variable with an object containing its data
@@ -361,6 +385,14 @@ function TrainerFields({
         onBlur={validateCity}
       />
       {errorsProps.cityError && <ErrorText>{errorsProps.cityError}</ErrorText>}
+
+      <Button
+        type="button"
+        disabled={buttonsProps.isLoading}
+        onClick={() => setIsTrainerSignup(false)}
+      >
+        Go back
+      </Button>
 
       <Button
         trainer
