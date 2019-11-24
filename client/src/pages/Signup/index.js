@@ -89,12 +89,25 @@ export default function Signup() {
   async function handleSubmit(e) {
     e.preventDefault()
 
-    if (isLoading || !isUserReady || !isUserInputValid) {
-      return
+    // only submit when not loading and the required fields are filled+valid
+    if (isTrainerSignup) {
+      if (isLoading || !isTrainerReady || !isTrainerInputValid) {
+        return
+      }
+    } else {
+      if (isLoading || !isUserReady || !isUserInputValid) {
+        return
+      }
+    }
+
+    let signupData = { firstName, lastName, email, password }
+    if (isTrainerSignup) {
+      signupData = { ...signupData, description, experience, speciality, city }
+      signupData.type = 'trainer'
     }
 
     setLoading(true)
-    const { error, user } = await authApi.signup({ email, password })
+    const { error, user } = await authApi.signup(signupData)
 
     if (error) {
       setLoading(false)
