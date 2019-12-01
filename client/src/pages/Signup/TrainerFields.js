@@ -1,5 +1,6 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import styled from '@emotion/styled'
+import { trainerApi } from '../../services/api'
 
 export default TrainerFields
 
@@ -58,7 +59,6 @@ const Button = styled.button`
   }
 `
 
-// TODO: call algolia and grab the city id + name
 function TrainerFields({
   trainerProps,
   setTrainerProps,
@@ -70,9 +70,24 @@ function TrainerFields({
   // cityInput will be used to request a city by name using algolia, then
   // update the parent's city variable with an object containing its data
   const [cityInput, setCityInput] = useState(trainerProps.city.name || '')
+  const [cities, setCities] = useState([])
+  const [searchBoxVisibility, setSearchBoxVisibility] = useState(false)
+
+  useEffect(() => {
+    if (cityInput.length > 2 && cityInput !== trainerProps.city.name) {
+      updateSearchBox()
+      setSearchBoxVisibility(true)
+    }
+
+    async function updateSearchBox() {
+      const { cities } = await trainerApi.getCities(cityInput)
+      setCities(cities)
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [cityInput])
 
   return (
-    <>
+    <div onClick={hideSearchBox}>
       <h2>Complete your trainer info</h2>
       <TextArea
         placeholder="Description / Relevant Skills..."
@@ -111,16 +126,50 @@ function TrainerFields({
         <ErrorText>{errorsProps.specialityError}</ErrorText>
       )}
 
-      <Input
-        type="search"
-        placeholder="City"
-        value={cityInput}
-        onChange={(e) => setCityInput(e.target.value)}
-        error={errorsProps.cityError}
-        onFocus={() => setErrorsProps.setCityError('')}
-        onBlur={validateCity}
-      />
-      {errorsProps.cityError && <ErrorText>{errorsProps.cityError}</ErrorText>}
+      <div id="citySearch" style={{ position: 'relative' }}>
+        <Input
+          type="search"
+          placeholder="City"
+          value={cityInput}
+          onChange={(e) => setCityInput(e.target.value)}
+          error={errorsProps.cityError}
+          onFocus={() => {
+            setErrorsProps.setCityError('')
+            setSearchBoxVisibility(true)
+          }}
+        />
+        {errorsProps.cityError && (
+          <ErrorText>{errorsProps.cityError}</ErrorText>
+        )}
+
+        {searchBoxVisibility && (
+          <div
+            style={{
+              position: 'absolute',
+              top: 'calc(100% - 1em)',
+              right: '10%',
+              left: '10%',
+              backgroundColor: 'white',
+              boxShadow: '0 1px 1px rgba(0, 0, 0, 0.7)'
+            }}
+          >
+            <ul>
+              {cities.map((city) => (
+                <li
+                  key={city.id}
+                  onClick={() => {
+                    setTrainerProps.setCity(city)
+                    setCityInput(city.name)
+                    setSearchBoxVisibility(false)
+                  }}
+                >
+                  {city.name} - {city.country}
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
+      </div>
 
       <Button
         type="button"
@@ -140,8 +189,22 @@ function TrainerFields({
       >
         Register as a Trainer
       </Button>
-    </>
+    </div>
   )
+
+  // hides the search box if the user clicks somewhere else
+  // after filling the city input. Only then should it work
+  // it's treated the same as a blur on inputs
+  function hideSearchBox(e) {
+    if (
+      cityInput &&
+      !e.target.matches('#citySearch li') &&
+      !e.target.matches('#citySearch input')
+    ) {
+      setSearchBoxVisibility(false)
+      validateCity()
+    }
+  }
 
   function validateDescription() {
     const { description } = trainerProps

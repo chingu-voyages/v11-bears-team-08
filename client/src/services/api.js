@@ -64,4 +64,15 @@ const authApi = {
   }
 }
 
-export { initApi, authApi }
+const trainerApi = {
+  // FIXME: replace by real api call
+  async getCities(text) {
+    const cities = [
+      { id: 1, name: 'first city', country: 'The rising sun' },
+      { id: 2, name: 'last city', country: 'The setting sun' },
+      { id: 3, name: 'popular city', country: 'The looming dawn' }
+    ]
+    return Promise.resolve({ cities })
+  }
+}
+export { initApi, authApi, trainerApi }
