@@ -1,6 +1,7 @@
 const jwt = require('jsonwebtoken')
 const omit = require('lodash.omit')
 const User = require('../resources/components/user/user.model')
+const Client = require('../resources/components/client/client.model')
 const privateKey = process.env.JWT_SECRET || 'gimly-privaaaaaaate'
 
 // configures all auth routes, effectively making this file a module
@@ -76,10 +77,9 @@ async function signin(req, res) {
 }
 
 async function signup(req, res) {
-  const { email, password } = req.body
-  const type = req.body.type || 'client'
+  const { type, email, password } = req.body
 
-  if (!email || !password) {
+  if (!type || !email || !password) {
     return res.status(400).send()
   }
 
@@ -88,7 +88,8 @@ async function signup(req, res) {
   }
 
   try {
-    const user = await User.create({ email, password, type })
+    const user = new Client({ email, password })
+    await user.save()
 
     // send a signed cookie with the token
     const token = signUserToken(user._id)
