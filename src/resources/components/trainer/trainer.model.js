@@ -9,11 +9,25 @@ const trainerSchema = new mongoose.Schema({
   },
   description: {
     type: String,
+    maxlength: 500,
+    trim: true
+  },
+  experience: {
+    type: String,
+    trim: true,
     maxlength: 500
   },
-  specialities: [String],
-  apointments: [String],
-  reviews: [String]
+  speciality: {
+    type: String,
+    required: true,
+    trim: true,
+    minlength: 4
+  },
+  city: {
+    id: { type: String, required: true, index: true },
+    name: { type: String, required: true, trim: true },
+    country: { type: String, required: true, trim: true }
+  }
 })
 
 module.exports = User.discriminator('Trainer', trainerSchema, 'trainer')
