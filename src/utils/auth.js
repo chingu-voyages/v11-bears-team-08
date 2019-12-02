@@ -77,9 +77,9 @@ async function signin(req, res) {
 }
 
 async function signup(req, res) {
-  const { type, email, password } = req.body
+  const { type, firstName, lastName, email, password } = req.body
 
-  if (!type || !email || !password) {
+  if (!type || !firstName || !lastName || !email || !password) {
     return res.status(400).send()
   }
 
@@ -88,7 +88,7 @@ async function signup(req, res) {
   }
 
   try {
-    const user = new Client({ email, password })
+    const user = new Client({ firstName, lastName, email, password })
     await user.save()
 
     // send a signed cookie with the token
