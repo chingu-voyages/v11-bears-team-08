@@ -1,21 +1,18 @@
 const mongoose = require('mongoose')
 const bcrypt = require('bcryptjs')
 
-const baseOptions = {
-  discriminatorKey: '__type',
-  collection: 'users'
-}
-
 const userSchema = new mongoose.Schema(
   {
     firstName: {
       type: String,
+      required: true,
       trim: true,
       minlength: 3,
       maxlength: 50
     },
     lastName: {
       type: String,
+      required: true,
       trim: true,
       minlength: 3,
       maxlength: 50
@@ -36,7 +33,7 @@ const userSchema = new mongoose.Schema(
     apointments: [String],
     conversations: [String]
   },
-  baseOptions
+  { discriminatorKey: 'type' }
 )
 
 function validEmail(val) {
@@ -61,6 +58,4 @@ userSchema.methods.isValidPassword = function isValidPassword(password) {
   return bcrypt.compare(password, this.password)
 }
 
-const User = mongoose.model('User', userSchema)
-
-module.exports = User
+module.exports = mongoose.model('User', userSchema)

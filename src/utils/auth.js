@@ -1,6 +1,8 @@
 const jwt = require('jsonwebtoken')
 const omit = require('lodash.omit')
 const User = require('../resources/components/user/user.model')
+const Client = require('../resources/components/client/client.model')
+const Trainer = require('../resources/components/trainer/trainer.model')
 const privateKey = process.env.JWT_SECRET || 'gimly-privaaaaaaate'
 
 // configures all auth routes, effectively making this file a module
@@ -76,10 +78,18 @@ async function signin(req, res) {
 }
 
 async function signup(req, res) {
-  const { email, password } = req.body
-  const type = req.body.type || 'client'
+  const { type, firstName, lastName, email, password } = req.body
+  const { speciality, city } = req.body
+  const { description, experience } = req.body
 
-  if (!email || !password) {
+  if (!type || !firstName || !lastName || !email || !password) {
+    return res.status(400).send()
+  }
+
+  if (
+    type === 'trainer' &&
+    !(speciality && city && city.id && city.name && city.country)
+  ) {
     return res.status(400).send()
   }
 
@@ -88,7 +98,17 @@ async function signup(req, res) {
   }
 
   try {
-    const user = await User.create({ email, password, type })
+    const userFields = { firstName, lastName, email, password }
+    const trainerFields = { description, experience, speciality, city }
+
+    let user
+    if (type === 'client') {
+      user = new Client(userFields)
+    } else if (type === 'trainer') {
+      user = new Trainer({ ...userFields, ...trainerFields })
+    }
+
+    await user.save()
 
     // send a signed cookie with the token
     const token = signUserToken(user._id)
@@ -102,16 +122,10 @@ async function signup(req, res) {
 
     const { errors } = error
     if (errors) {
-      if (errors.email) {
-        return res.json({
-          error: { field: 'email', message: errors.email.message }
-        })
-      }
-      if (errors.password) {
-        return res.json({
-          error: { field: 'password', message: errors.password.message }
-        })
-      }
+      const firstErrName = Object.keys(errors)[0]
+      return res.json({
+        error: { field: firstErrName, message: errors[firstErrName].message }
+      })
     }
 
     // other errors would be server generated errors
@@ -121,7 +135,15 @@ async function signup(req, res) {
 
 /****** Utilities ******/
 function getSafeUser(user) {
-  return omit(user, ['__v', '_id', 'password'])
+  return omit(user, [
+    '__v',
+    '_id',
+    'password',
+    'description',
+    'experience',
+    'speciality',
+    'city'
+  ])
 }
 
 function signUserToken(id) {
