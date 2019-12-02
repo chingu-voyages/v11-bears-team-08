@@ -111,10 +111,15 @@ export default function Signup() {
 
     if (error) {
       setLoading(false)
-      if (error.field === 'firstName') return setFNameError(error.message)
-      if (error.field === 'lastName') return setLNameError(error.message)
-      if (error.field === 'email') return setEmailError(error.message)
-      if (error.field === 'password') return setPasswordError(error.message)
+      const { field, message } = error
+      if (field === 'firstName') return setFNameError(message)
+      if (field === 'lastName') return setLNameError(message)
+      if (field === 'email') return setEmailError(message)
+      if (field === 'password') return setPasswordError(message)
+      if (field === 'description') return setDescriptionError(message)
+      if (field === 'experience') return setExperienceError(message)
+      if (field === 'speciality') return setSpecialityError(message)
+      if (field === 'city') return setCityError(message)
     }
 
     setLoading(false)
