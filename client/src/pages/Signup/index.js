@@ -96,8 +96,8 @@ export default function Signup() {
 
     if (error) {
       setLoading(false)
-      if (error.field === 'fName') return setFNameError(error.message)
-      if (error.field === 'lName') return setLNameError(error.message)
+      if (error.field === 'firstName') return setFNameError(error.message)
+      if (error.field === 'lastName') return setLNameError(error.message)
       if (error.field === 'email') return setEmailError(error.message)
       if (error.field === 'password') return setPasswordError(error.message)
     }

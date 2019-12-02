@@ -103,16 +103,10 @@ async function signup(req, res) {
 
     const { errors } = error
     if (errors) {
-      if (errors.email) {
-        return res.json({
-          error: { field: 'email', message: errors.email.message }
-        })
-      }
-      if (errors.password) {
-        return res.json({
-          error: { field: 'password', message: errors.password.message }
-        })
-      }
+      const firstErrName = Object.keys(errors)[0]
+      return res.json({
+        error: { field: firstErrName, message: errors[firstErrName].message }
+      })
     }
 
     // other errors would be server generated errors
